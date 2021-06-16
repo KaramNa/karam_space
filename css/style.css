@@ -1,0 +1,23 @@
+.bg-image {
+  background: url("../images/background.jpg") no-repeat;
+  background-size: cover;
+  height: 100vh;
+}
+
+.title-row {
+  min-height: 95vh;
+}
+
+.signin-form {
+  background-color: azure;
+  padding: 35px;
+  border-radius: 5px;
+}
+
+.term {
+  font-size: 12px;
+}
+
+.policy-link {
+  text-decoration: none;
+}
