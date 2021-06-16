@@ -21,3 +21,9 @@
 .policy-link {
   text-decoration: none;
 }
+
+.scroll-menu{
+    /* min-width: 220px; */
+    max-height: 40vh;
+    overflow: scroll;
+  }

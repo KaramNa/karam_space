@@ -17,7 +17,7 @@
           <h1 class="display-1 text-light">Karam Space</h1>
         </div>
         <div class="col-md-5">
-          <form action="" class="signin-form">
+          <form action="signin.php" method="POST" class="signin-form">
             <input class="form-control mt-4" type="email" name="email" placeholder="Enter your email address">
             <input class="form-control mt-4" type="password" name="password" placeholder="Enter your password">
             <button class="btn btn-primary  form-control mt-4" type="submit">Sign in</button>
@@ -55,40 +55,42 @@
                 <div class="row">
                   <p class="mb-0 mt-2 px-1">Birthday</p>
                   <div class="col-sm-4 px-1 mt-2">
-                    <div class="dropdown">
-                      <button class="dropdown-toggle form-control" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-
-                      </button>
-                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                      </ul>
-                    </div>
+                    <select name="day" class="form-select">
+                      <?php
+                      $day = 1;
+                      while ($day <= 31) {
+                        echo "<option> $day </option>";
+                        $day++;
+                      }
+                      ?>
+                    </select>
                   </div>
                   <div class="col-sm-4 px-1 mt-2">
-                    <div class="dropdown">
-                      <button class="dropdown-toggle form-control" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-
-                      </button>
-                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Somethin</a></li>
-                      </ul>
-                    </div>
+                    <select name="month" class="form-select">
+                      <option>January</option>
+                      <option>Febuary</option>
+                      <option>March</option>
+                      <option>April</option>
+                      <option>May</option>
+                      <option>June</option>
+                      <option>July</option>
+                      <option>August</option>
+                      <option>September</option>
+                      <option>October</option>
+                      <option>November</option>
+                      <option>December</option>
+                    </select>
                   </div>
                   <div class="col-sm-4 px-1 mt-2">
-                    <div class="dropdown">
-                      <button class="dropdown-toggle form-control" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-
-                      </button>
-                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                      </ul>
-                    </div>
+                    <select name="year" class="form-select">
+                      <?php
+                      $year = 2021;
+                      while ($year >= 1900) {
+                        echo "<option> $year </option>";
+                        $year--;
+                      }
+                      ?>
+                    </select>
                   </div>
                 </div>
                 <div class="row">
