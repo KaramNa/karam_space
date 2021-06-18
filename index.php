@@ -27,7 +27,7 @@
           </form>
         </div>
       </div>
-      <footer class="text-center text-light">&copy; 2021 Copyright: <strong>Karam Nassar</strong></footer>
+      <footer class="text-center text-light fixed-bottom">&copy; 2021 Copyright: <strong>Karam Nassar</strong></footer>
     </div>
 
     <!-- Modal -->

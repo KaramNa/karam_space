@@ -1,5 +1,5 @@
 <?php
-include("database.php");
+include("database-config.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $first_name = test_input($_POST["firstname"]);
@@ -25,5 +25,12 @@ if ($sql->num_rows > 0) {
     $con->query("INSERT INTO users(firstname,lastname,email,password,gender,birthday) VALUES('$first_name','$last_name','$email','$newpassword','$gender','$birthday')");
 
 }
-
+session_start();
+$sql = $con->query("SELECT * FROM users WHERE email = '$email'");
+$row = $sql->fetch_assoc();
+if($sql !== false and $sql->num_rows > 0){
+    session_start();
+    $_SESSION["user_id"] = $row["user_id"];
+    header("location:home.php");
+}
 ?>
