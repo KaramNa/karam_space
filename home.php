@@ -93,11 +93,38 @@
                             <div class="row my-4 ps-4"><?php echo $content ?></div>
                             <div class="row"><img class="img-fluid" src="<?php echo $post_image ?>" alt=""></div>
                         </div>
+                        <div class="row mt-3">
+                            <?php
+                            $comment = $con->query("SELECT * FROM comments WHERE post_id = '$post_id' ORDER BY post_id DESC");
+                            while ($row = $comment->fetch_assoc()) {
+                                $comment_id = $row["comment_id"];
+                                $comment_content = $row["comment_content"];
+                                $comment_date = $row["comment_date"];
+                            ?>
+                                <div class="row">
+                                
+                                    <div class="col-sm-2"><img class="w-75 img-comment mt-2" src="<?php echo $user_image ?>" alt=""></div>
+                                    <div class="col-sm-10">Lorem ipsum, dolor sit amet consectetur adipisig elit. Odit aliquid, hic porro repellendus consequatur explicabo sed rerum aliquam minus placeat.</div>
+                                </div>
+
+                            <?php } ?>
+                            ?>
+                            <form action="add_comment" method="POST">
+                                <div class="row border justify-content-center py-3 my-3 mx-1">
+                                    <div class="col-lg-10  col-md-8  pe-1">
+                                        <textarea class="form-control" name="comment" rows="2" placeholder="Enter a comment"></textarea>
+                                    </div>
+                                    <div class="col-lg-2 col-md-4 mt-2">
+                                        <button type="submit">Comment</button>
+                                    </div>
+                            </form>
+                        </div>
                     </div>
-                <?php } ?>
-                <!-- End while loop -->
             </div>
+        <?php } ?>
+        <!-- End while loop -->
         </div>
+    </div>
     </div>
     <footer class="text-center text-light bg-dark fixed-bottom">&copy; 2021 Copyright: <strong>Karam Nassar</strong></footer>
 
