@@ -34,3 +34,7 @@
 .link-button:hover{
   color: #5958cd;
 }
+
+.user-image{
+  cursor: pointer;
+}
