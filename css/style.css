@@ -18,10 +18,19 @@
   font-size: 12px;
 }
 
-.policy-link {
+.link {
   text-decoration: none;
 }
 
 .img-comment{
   margin-left: 12px;
+}
+
+.link-button{
+  background: none;
+  border: none;
+  color: #0d6efd;
+}
+.link-button:hover{
+  color: #5958cd;
 }

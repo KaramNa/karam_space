@@ -101,21 +101,39 @@
                                 $comment_content = $row["comment_content"];
                                 $comment_date = $row["comment_date"];
                             ?>
-                                <div class="row">
-                                
-                                    <div class="col-sm-2"><img class="w-75 img-comment mt-2" src="<?php echo $user_image ?>" alt=""></div>
-                                    <div class="col-sm-10">Lorem ipsum, dolor sit amet consectetur adipisig elit. Odit aliquid, hic porro repellendus consequatur explicabo sed rerum aliquam minus placeat.</div>
+                                <!-- show comments -->
+                                <div class="row mt-1">
+                                    <div class="col-lg-1 col-md-2"><img class="img-fluid img-comment" src="<?php echo $user_image ?>" alt=""></div>
+                                    <div class="col-lg-11 col-md-10">
+                                        <div class="bg-light rounded p-1">
+                                            <p class="mb-0 text-capitalize"><strong><?php echo $posted_by ?></strong></p>
+                                            <div id="new_comment" class="d-none" data-id="<?php echo "div" . $comment_id ?>">
+                                                <textarea class="form-control" id="new_comment_content" rows="2" placeholder="Enter a comment" data-id="<?php echo "textarea" . $comment_id ?>"></textarea>
+                                                <button class="link-button small" onclick="edit_done()">Done</button>
+                                                <button class="link-button small" onclick="edit_cancel()">Cancel</button>
+                                            </div>
+                                            <p id="old_comment" class="" data-id="<?php echo "p" . $comment_id ?>"><?php echo $comment_content ?></p>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <span class="small"><button class="link-button" id="edit_comment" onclick="edit_comment(this.value)" value="<?php echo $comment_id ?>" data-id="<?php echo "edit_btn" . $comment_id ?>">Edit</button></span>
+                                                <span class="small"><a id="delete_comment" href="delete_comment.php<?php echo '?id=' . $comment_id ?>" class="link" data-id="<?php echo "delete_btn" . $comment_id ?>">Delete</a></span>
+                                            </div>
+                                            <span class="small" data-id="<?php echo "date" . $comment_id ?>"><?php echo $comment_date ?></span>
+                                        </div>
+                                    </div>
                                 </div>
 
                             <?php } ?>
-                            ?>
-                            <form action="add_comment" method="POST">
+                            <!-- add a comment -->
+                            <form action="add_comment.php" method="POST">
                                 <div class="row border justify-content-center py-3 my-3 mx-1">
                                     <div class="col-lg-10  col-md-8  pe-1">
                                         <textarea class="form-control" name="comment" rows="2" placeholder="Enter a comment"></textarea>
+                                        <input type="text" name="post_id" value="<?php echo $post_id ?>" hidden>
                                     </div>
                                     <div class="col-lg-2 col-md-4 mt-2">
-                                        <button type="submit">Comment</button>
+                                        <button type="submit" class="btn btn-secondary">Comment</button>
                                     </div>
                             </form>
                         </div>
@@ -131,6 +149,8 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <script src="js/script.js"></script>
+
 </body>
 
 </html>
