@@ -38,3 +38,7 @@
 .user-image{
   cursor: pointer;
 }
+
+.error{
+  color: red;
+}

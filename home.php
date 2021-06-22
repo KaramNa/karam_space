@@ -10,6 +10,7 @@
 </head>
 
 <body>
+
     <?php
     include("session.php");
     include("database-config.php");
@@ -26,7 +27,7 @@
                         <a class="nav-link active" href="#">Home</a>
                     </li>
                     <li class="nav-item text-capitalize">
-                        <a class="nav-link" href="#"><?php echo $firstname . " " . $lastname ?></a>
+                        <a class="nav-link" href="profile.php"><?php echo $firstname . " " . $lastname ?></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Photos</a>
@@ -75,6 +76,7 @@
             </div>
             <div class="col-sm-8 mt-3">
                 <div class="border p-3">
+                    <!-- update status -->
                     <div>
                         <h1>Update Status</h1>
                         <form method="POST" action="newPost.php" enctype="multipart/form-data">
@@ -167,12 +169,8 @@
     </div>
     <footer class="text-center text-light bg-dark fixed-bottom">&copy; 2021 Copyright: <strong>Karam Nassar</strong></footer>
 
-    <!-- Button trigger modal
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-        Launch static backdrop modal
-    </button> -->
 
-    <!-- Modal -->
+    <!-- User Photo Modal -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -194,7 +192,6 @@
         </div>
     </div>
     </div>
-    <!-- update status -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
     <script src="js/script.js"></script>
