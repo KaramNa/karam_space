@@ -40,3 +40,7 @@ function edit_done() {
   window.location =
     "/network/edit_comment.php?id=" + comment_id + "&comment=" + comment.value;
 }
+
+// function checksignup(){
+
+// }

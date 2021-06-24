@@ -47,52 +47,54 @@ if (isset($_SESSION['user_id'])) {
     }
   }
   // Sign up
-  if (array_key_exists('signup', $_POST)) {
-    $firstname = test_input($_POST["firstname"]);
-    $lastname = test_input($_POST["lastname"]);
-    $email = test_input($_POST["email"]);
-    $newpassword = test_input($_POST["newpassword"]);
-    $birthday = test_input($_POST["day"] . "/" . $_POST["month"] . "/" . $_POST["year"]);
-    $gender = test_input($_POST["gender"]);
-    $profile_picture = "images/profile_pictures/default.jpg";
-    $singupOk = 1;
+    include('database-config.php');
 
-    if ($firstname == "") {
-      $error_firstname = "<label class='error'>* Required field</label>";
-      $singupOk = 0;
-    }
-    if ($lastname == "") {
-      $error_lastname = "<label class='error'>* Required field</label>";
-      $singupOk = 0;
-    }
-    if ($email == "") {
-      $error_new_email = "<label class='error'>* Required field</label>";
-      $singupOk = 0;
-    }
-    $sql = $con->query("SELECT * FROM users WHERE email='$email'");
-    if ($sql->num_rows > 0) {
-      $error_new_email = "<label class='error'>Email address already exsits</label>";
-      $singupOk = 0;
-    }
-    if ($newpassword == "") {
-      $error_new_password = "<label class='error'>* Required field</label>";
-      $singupOk = 0;
-    }
-    if ($gender == "") {
-      $error_gender = "<label class='error'>* Required field</label>";
-      $singupOk = 0;
-    }
-    if ($singupOk == 1) {
-      $con->query("INSERT INTO users(firstname,lastname,email,password,gender,birthday ,profile_picture) VALUES('$firstname','$lastname','$email','$newpassword','$gender','$birthday','$profile_picture')");
-      $sql = $con->query("SELECT * FROM users WHERE email = '$email'");
-      $row = $sql->fetch_assoc();
-      if ($sql !== false and $sql->num_rows > 0) {
-        $_SESSION["user_id"] = $row["user_id"];
-        header('location:home.php');
+    if (array_key_exists('signup', $_POST)) {
+      $firstname = test_input($_POST["firstname"]);
+      $lastname = test_input($_POST["lastname"]);
+      $email = test_input($_POST["email"]);
+      $newpassword = test_input($_POST["newpassword"]);
+      $birthday = test_input($_POST["day"] . "/" . $_POST["month"] . "/" . $_POST["year"]);
+      $gender = test_input($_POST["gender"]);
+      $profile_picture = "images/profile_pictures/default.jpg";
+      $singupOk = 1;
+
+      if ($firstname == "") {
+        $error_firstname = "<label class='error'>* Required field</label>";
+        $singupOk = 0;
+      }
+      if ($lastname == "") {
+        $error_lastname = "<label class='error'>* Required field</label>";
+        $singupOk = 0;
+      }
+      if ($email == "") {
+        $error_new_email = "<label class='error'>* Required field</label>";
+        $singupOk = 0;
+      }
+      $sql = $con->query("SELECT * FROM users WHERE email='$email'");
+      if ($sql->num_rows > 0) {
+        $error_new_email = "<label class='error'>Email address already exsits</label>";
+        $singupOk = 0;
+      }
+      if ($newpassword == "") {
+        $error_new_password = "<label class='error'>* Required field</label>";
+        $singupOk = 0;
+      }
+      if ($gender == "") {
+        $error_gender = "<label class='error'>* Required field</label>";
+        $singupOk = 0;
+      }
+      if ($singupOk == 1) {
+        $con->query("INSERT INTO users(firstname,lastname,email,password,gender,birthday ,profile_picture) VALUES('$firstname','$lastname','$email','$newpassword','$gender','$birthday','$profile_picture')");
+        $sql = $con->query("SELECT * FROM users WHERE email = '$email'");
+        $row = $sql->fetch_assoc();
+        if ($sql !== false and $sql->num_rows > 0) {
+          $_SESSION["user_id"] = $row["user_id"];
+          header('location:home.php');
+        }
       }
     }
   }
-}
 
 ?>
 <!doctype html>
@@ -104,6 +106,8 @@ if (isset($_SESSION['user_id'])) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <Script src="js/script.js"></Script>
   <title>Welcome to Karam Space</title>
 </head>
 
@@ -247,6 +251,8 @@ if (isset($_SESSION['user_id'])) {
 
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+  
+  </script>
 </body>
 
 </html>
