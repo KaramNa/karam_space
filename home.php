@@ -25,10 +25,10 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Home</a>
+                        <a class="nav-link active" href="home.php">Home</a>
                     </li>
                     <li class="nav-item text-capitalize">
-                        <a class="nav-link" href="profile.php"><?php echo $firstname . " " . $lastname ?></a>
+                        <a class="nav-link" href="profile.php?id=<?php echo $_SESSION['user_id']?>"><?php echo $firstname . " " . $lastname ?></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Photos</a>

@@ -9,7 +9,7 @@ if (isset($_POST["query"])) {
     $output = "<div>";
     if ($result->num_rows > 0) {
         while($row = $result->fetch_assoc()) {
-            $output .= "<a href='search_result.php'>" . $row["firstname"] . "</a><br>";
+            $output .= "<a class='nav-link' href='profile.php?id=" . $row["user_id"] . "'>" . $row["firstname"] . "</a>";
         }
     } else {
         $output .= "No resutl found";
