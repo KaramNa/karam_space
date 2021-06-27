@@ -70,4 +70,29 @@ if (isset($_POST["action"])) {
         WHERE request_to_id = '$request_from_id'
         AND request_notify_status = 'no'");
     }
+
+    if ($action == "load_friend_list") {
+        $condition = '';
+        if (!empty($_POST["query"])) {
+            // $condition = "AND users.firstname LIKE '" . $_POST["query"] . "%' OR";
+            $query = "
+                    SELECT users.user_id ,users.firstname, users.lastname, friend_request.request_from_id, friend_request.request_to_id
+                    FROM users INNER JOIN friend_request ON
+                    friend_request.request_from_id = users.user_id OR
+                    friend_request.request_to_id = users.user_id 
+                    WHERE (friend_request.request_to_id = '$request_from_id' OR friend_request.request_from_id = '$request_from_id')
+                    AND users.user_id != '$request_from_id'
+                    AND friend_request.request_status = 'confirm' 
+                    
+            ";
+            $result = $con->query($query);
+            $output = "";
+            if($result->num_rows > 0){
+                foreach($result as $row){
+                    $output .= "<li><a class=' href='profile.php?id=" . $row["user_id"] . "'>" . $row["firstname"] . $row["lastname"] . "</a></li>";
+                }
+            }
+            echo $output;
+        }
+    }
 }
