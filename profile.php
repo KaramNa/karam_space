@@ -113,10 +113,26 @@ $user = $query->fetch_assoc();
         </div>
         <div class="row mt-5">
             <div class="col-md-4">
-                <p>Full Name: <b class="text-capitalize"><?php echo $user["firstname"] . " " . $user["lastname"] ?></b></p>
-                <p>Email Address: <b class="text-capitalize"><?php echo $user["email"] ?></b></p>
-                <p>Gender: <b class="text-capitalize"><?php echo $user["gender"] ?></b></p>
-                <p>Birthday: <b class="text-capitalize"><?php echo $user["birthday"] ?></b></p>
+                <div class="row border">
+                    <p>Full Name: <b class="text-capitalize"><?php echo $user["firstname"] . " " . $user["lastname"] ?></b></p>
+                    <p>Email Address: <b class="text-capitalize"><?php echo $user["email"] ?></b></p>
+                    <p>Gender: <b class="text-capitalize"><?php echo $user["gender"] ?></b></p>
+                    <p>Birthday: <b class="text-capitalize"><?php echo $user["birthday"] ?></b></p>
+                </div>
+                <div class="row border mt-3 p-1 justify-content-between align-items-center">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5 class="m-0">Friend list</h5>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="search_friend_list" placeholder="Search list">
+                        </div>
+                    </div>
+                    <div class="row mt-2 border">
+                        <ul id="friend_list">
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div class="col-md-8">
                 <?php $request_to_id = $_SESSION["user_id"];
@@ -247,6 +263,22 @@ $user = $query->fetch_assoc();
                     }
                 });
 
+            });
+
+            $("#search_friend_list").keyup(function(){
+                var action = "load_friend_list"; 
+                var query = $(this).val();
+                $.ajax({
+                    url:"frined_request.php",
+                    method: "POST",
+                    data:{
+                        query:query,
+                        action:action
+                    },
+                    success: function(data){
+                        $("#friend_list").html(data);
+                    }
+                });
             });
         });
     </script>
