@@ -1,8 +1,9 @@
 <?php
 include("session.php");
 include("database-config.php");
-$user_id = $_GET["id"];
-$query = $con->query("SELECT * FROM users WHERE user_id = '$user_id'");
+$request_to_id = $_GET["id"];
+$request_from_id = $_SESSION["user_id"];
+$query = $con->query("SELECT * FROM users WHERE user_id = '$request_to_id'");
 $user = $query->fetch_assoc();
 ?>
 <!doctype html>
@@ -11,6 +12,7 @@ $user = $query->fetch_assoc();
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
     <title>Karam Space</title>
@@ -31,7 +33,7 @@ $user = $query->fetch_assoc();
                         <a class="nav-link active" href="home.php">Home</a>
                     </li>
                     <li class="nav-item text-capitalize">
-                        <a class="nav-link" href="profile.php?id=<?php echo $_SESSION['user_id'] ?>"><?php echo $firstname . " " . $lastname ?></a>
+                        <a class="nav-link" href="profile.php?id=<?php echo $request_from_id ?>"><?php echo $firstname . " " . $lastname ?></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Photos</a>
@@ -55,10 +57,56 @@ $user = $query->fetch_assoc();
             <div class="col-sm-4">
                 <img class="rounded-circle img-fluid mt-5" src="<?php echo $user['profile_picture'] ?>" alt="">
                 <?php
-                if ($_SESSION["user_id"] != $user_id) {
+                if ($request_from_id != $request_to_id) {
+                    $query_sent = "SELECT * FROM friend_request WHERE
+                                request_from_id = '$request_from_id' AND request_to_id = '$request_to_id'";
+                    $query_recieve = "SELECT * FROM friend_request WHERE 
+                                request_from_id = '$request_to_id' AND request_to_id = '$request_from_id'";
+                    $sent_result = $con->query($query_sent);
+                    $recieve_result =  $con->query($query_recieve);
+                    $friends = false;
+                    $friend_request_id = 0;
+                    if ($sent_result->num_rows > 0) {
+                        $result = $sent_result->fetch_assoc();
+                        $request_status = $result["request_status"];
+                        $friend_request_id = $result["request_id"];
+                        if ($request_status == "pending") {
                 ?>
-                    <div class="mt-2"><button class="btn btn-primary">Add friend</button></div>
-                <?php }
+                            <div class="d-flex justify-content-center">
+                                <div class="mt-2 ms-2"><button id="cancel_request" class="btn btn-primary">Cancel request</button></div>
+                            </div>
+                        <?php
+                        } elseif ($request_status == "confirm") {
+                            $friends = true;
+                        }
+                    } elseif ($recieve_result->num_rows > 0) {
+                        $result = $recieve_result->fetch_assoc();
+                        $request_status = $result["request_status"];
+                        $friend_request_id = $result["request_id"];
+                        if ($request_status == "pending") {
+                        ?>
+                            <div class="d-flex justify-content-center">
+                                <div class="mt-2"><button id="accept_friend" class="btn btn-primary">Accept</button></div>
+                                <div class="mt-2 ms-2"><button id="reject_friend" class="btn btn-primary">Reject</button></div>
+                            </div>
+                        <?php
+                        } elseif ($request_status == "confirm") {
+                            $friends = true;
+                        }
+                    } elseif ($recieve_result->num_rows === 0 and $sent_result->num_rows === 0) {
+                        ?>
+                        <div class="mt-2"><button id="add_friend" class="btn btn-primary">Add friend</button></div>
+
+                    <?php
+                    }
+                    if ($friends) {
+                    ?>
+                        <div class="d-flex justify-content-center">
+                            <div class="mt-2"><button id="remove_friend" class="btn btn-primary">Remove friend</button></div>
+                        </div>
+                <?php
+                    }
+                }
                 ?>
                 <div class="col-sm-4"></div>
             </div>
@@ -71,6 +119,60 @@ $user = $query->fetch_assoc();
         </div>
     </div>
 
+
+
+    <script>
+        $(document).ready(function() {
+            $("#add_friend").click(function() {
+                var request_to_id = <?php echo $request_to_id ?>;
+                var action = "add_friend";
+                $.ajax({
+                    url: "friend_request.php",
+                    method: "POST",
+                    data: {
+                        request_to_id: request_to_id,
+                        action: action
+                    },
+                    success: function(data) {
+                        location.reload();
+                    }
+                });
+
+            });
+            $("#cancel_request, #reject_friend,#remove_friend").click(function() {
+                var request_id = <?php echo $friend_request_id ?>;
+                var action = "cancel_request";
+
+                $.ajax({
+                    url: "friend_request.php",
+                    method: "POST",
+                    data: {
+                        request_id: request_id,
+                        action: action
+                    },
+                    success: function(data) {
+                        location.reload();
+                    }
+                });
+            });
+            $("#accept_friend").click(function() {
+                var request_id = <?php echo $friend_request_id ?>;
+                var action = "accept_friend";
+                $.ajax({
+                    url: "friend_request.php",
+                    method: "POST",
+                    data: {
+                        request_id: request_id,
+                        action: action
+                    },
+                    success: function(data) {
+                        location.reload();
+                    }
+                });
+
+            });
+        });
+    </script>
 </body>
 
 </html>

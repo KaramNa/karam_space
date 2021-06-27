@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
     <title>Karam Space</title>
@@ -24,11 +25,21 @@
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                 <ul class="navbar-nav">
+                    <li class="dropdown nav-item">
+                        <a href="#" class="dropdown-toggle nav-link" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="friend_request_area">
+                            <span id="unseen_friend_request_area"></span>
+                            <i class="fa fa-user-plus fa-2" aria-hidden="true"></i>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="dropdown-menu bg-dark" id="friend_request_list" aria-labelledby="dropdownMenuLink">
+
+                        </div>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="home.php">Home</a>
                     </li>
                     <li class="nav-item text-capitalize">
-                        <a class="nav-link" href="profile.php?id=<?php echo $_SESSION['user_id']?>"><?php echo $firstname . " " . $lastname ?></a>
+                        <a class="nav-link" href="profile.php?id=<?php echo $_SESSION['user_id'] ?>"><?php echo $firstname . " " . $lastname ?></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Photos</a>
@@ -53,16 +64,16 @@
             $target_file = $target_dir . basename($_FILES["upload_user_image"]["name"]);
             if (move_uploaded_file($_FILES["upload_user_image"]["tmp_name"], $target_file)) {
                 $location = "images/profile_pictures/" . $_FILES["upload_user_image"]["name"];
-                $user_id = $_SESSION["user_id"];
-                $con->query("UPDATE users SET profile_picture = '$location' WHERE user_id = '$user_id'");
+                $request_to_id = $_SESSION["user_id"];
+                $con->query("UPDATE users SET profile_picture = '$location' WHERE user_id = '$request_to_id'");
             }
         }
     }
     ?>
     <!-- user info -->
     <?php
-    $user_id = $_SESSION["user_id"];
-    $location = $con->query("SELECT profile_picture FROM users WHERE user_id='$user_id'")->fetch_assoc()["profile_picture"];
+    $request_to_id = $_SESSION["user_id"];
+    $location = $con->query("SELECT profile_picture FROM users WHERE user_id='$request_to_id'")->fetch_assoc()["profile_picture"];
     ?>
     <div class="container mt-5">
         <div class="row">
@@ -97,8 +108,8 @@
                     </div>
                 </div>
                 <?php
-                $user_id = $_SESSION["user_id"];
-                $query = $con->query("SELECT * FROM users JOIN posts ON users.user_id=$user_id AND posts.user_id=$user_id ORDER BY post_id DESC");
+                $request_to_id = $_SESSION["user_id"];
+                $query = $con->query("SELECT * FROM users JOIN posts ON users.user_id=$request_to_id AND posts.user_id=$request_to_id ORDER BY post_id DESC");
                 while ($row = $query->fetch_assoc()) {
                     $posted_by = $row["firstname"] . " " . $row["lastname"];
                     $post_image = $row["post_image"];
@@ -204,27 +215,90 @@
     <script src="js/script.js"></script>
     <script>
         $(document).ready(function() {
-            $("#search").keyup(function() {
-                console.log("dksaf");
-                var query = $(this).val();
-                if (query != "") {
+                $("#search").keyup(function() {
+                    var query = $(this).val();
+                    if (query != "") {
+                        $.ajax({
+                            url: "search_action.php",
+                            method: "POST",
+                            data: {
+                                query: query
+                            },
+                            success: function(data) {
+                                $("#search_result").html(data);
+                            }
+                        });
+                    } else {
+                        $("#search_result").html("");
+                    }
+
+                });
+            var friend_request_seen = false;
+            $("#friend_request_area").click(function() {
+                if (!friend_request_seen) {
+                load_friends_request_list();
+                friend_request_seen = true;
+                }
+            });
+
+                function count_un_seen_friend_request() {
+                    var action = 'count_un_seen_friend_request';
+
                     $.ajax({
-                        url: "search_action.php",
+                        url: "friend_request.php",
                         method: "POST",
                         data: {
-                            query: query
+                            action: action
                         },
                         success: function(data) {
-                            $("#search_result").html(data);
+                            if (data > 0) {
+                                $('#unseen_friend_request_area').html('<span class="label text-danger">' + data + '</span>');
+                                friend_request_seen = false;
+                            }
                         }
-                    });
-                } else {
-                    $("#search_result").html("");
+                    })
                 }
+            count_un_seen_friend_request();
+            setInterval(function() {
+                count_un_seen_friend_request();
+            }, 5000);
 
-            })
+            function load_friends_request_list() {
+                var action = "load_friend_request_list";
+                $.ajax({
+                    url: "friend_request.php",
+                    method: "POST",
+                    data: {
+                        action: action
+                    },
+                    beforeSend: function() {
+                        $('#friend_request_list').html('<li align="center"><i class="fa fa-circle-o-notch fa-spin"></i></li>');
+
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        $("#friend_request_list").html(data);
+                        remove_friend_request_count();
+                    }
+
+                });
+            }
             
 
+            function remove_friend_request_count() {
+                var action = "remove_friend_request_count";
+                $.ajax({
+                    url: "friend_request.php",
+                    method: "POST",
+                    data: {
+                        action: action
+                    },
+                    success: function(data) {
+                        $("#unseen_friend_request_area").html("");
+
+                    }
+                });
+            }
         }); //Document ready
     </script>
 </body>

@@ -48,11 +48,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (move_uploaded_file($_FILES["upload"]["tmp_name"], $target_file)) {
             echo "The file " . htmlspecialchars(basename($_FILES["upload"]["name"])) . " has been uploaded.";
             $location = "images/uploads/" . $_FILES["upload"]["name"];
-            $user_id = $_SESSION["user_id"];
+            $request_to_id = $_SESSION["user_id"];
             $post_content = $_POST["content"];
             $likes = 0;
 
-            $con->query("INSERT INTO posts(user_id,post_image,post_content,post_likes) VALUES('$user_id','$location','$post_content','$likes')");
+            $con->query("INSERT INTO posts(user_id,post_image,post_content,post_likes) VALUES('$request_to_id','$location','$post_content','$likes')");
         } else {
             echo "Sorry, there was an error uploading your file.";
         }
