@@ -142,22 +142,22 @@
                                 $comment_date = $row["comment_date"];
                             ?>
                                 <!-- show comments -->
-                                <div class="row mt-1">
+                                <div class="row mt-1 comment_to_remove">
                                     <div class="col-lg-1 col-md-2"><img class="img-fluid img-comment" src="<?php echo $user_image ?>" alt=""></div>
                                     <div class="col-lg-11 col-md-10">
                                         <div class="bg-light rounded p-1">
                                             <p class="mb-0 text-capitalize"><strong><?php echo $posted_by ?></strong></p>
                                             <div id="new_comment" class="d-none" data-id="<?php echo "div" . $comment_id ?>">
                                                 <textarea class="form-control" id="new_comment_content" rows="2" placeholder="Enter a comment" data-id="<?php echo "textarea" . $comment_id ?>"></textarea>
-                                                <button class="link-button small done-comment-edit" value="<?php echo $comment_id ?>">Done</button>
+                                                <button class="link-button small done_comment_edit" value="<?php echo $comment_id ?>">Done</button>
                                                 <button class="link-button small" onclick="edit_cancel()">Cancel</button>
                                             </div>
-                                            <p id="old_comment" class="" data-id="<?php echo "p" . $comment_id ?>"><?php echo $comment_content ?></p>
+                                            <p id="old_comment" class="old_comment text-break" data-id="<?php echo "p" . $comment_id ?>"><?php echo $comment_content ?></p>
                                         </div>
                                         <div class="d-flex justify-content-between">
                                             <div>
                                                 <span class="small"><button class="link-button" id="edit_comment" onclick="edit_comment(this.value)" value="<?php echo $comment_id ?>" data-id="<?php echo "edit_btn" . $comment_id ?>">Edit</button></span>
-                                                <span class="small"><a id="delete_comment" href="delete_comment.php<?php echo '?id=' . $comment_id ?>" class="link" data-id="<?php echo "delete_btn" . $comment_id ?>">Delete</a></span>
+                                                <span class="small"><button class="link-button small delete_comment" value="<?php echo $comment_id ?>">Delete</button></span>
                                             </div>
                                             <span class="small" data-id="<?php echo "date" . $comment_id ?>"><?php echo $comment_date ?></span>
                                         </div>
@@ -252,10 +252,13 @@
                 });
 
             });
-            $(".done-comment-edit").click(function(){
+            $(".done_comment_edit").click(function(){
                 var action = "edit_comment";
                 var comment_id = $(this).val();
                 var new_comment_content = $(this).siblings("textarea");
+                var edited_paragraph = $(this).parent().parent().find(".old_comment");
+                console.log(comment_id);
+                console.log(new_comment_content);
                 $.ajax({
                     url: "friend_request.php",
                     method: "POSt",
@@ -265,14 +268,31 @@
                         new_comment_content: new_comment_content.val()
                     },
                     success:function(data){
-                        new_comment_content.val(new_comment_content.val());
+                        edited_paragraph.html(data);
                         edit_done();
                     }
                 });
 
 
             });
-            
+            $(".delete_comment").click(function(){
+                var action = "delete_comment";
+                var comment_id = $(this).val();
+                var remove_comment = $(this).parents(".comment_to_remove");
+                $.ajax({
+                    url: "friend_request.php",
+                    method: "POSt",
+                    data:{
+                        action: action,
+                        comment_id: comment_id,
+                    },
+                    success:function(data){
+                        remove_comment.html("");
+                    }
+                });
+
+
+            });
             var friend_request_seen = false;
             $("#friend_request_area").click(function() {
                 if (!friend_request_seen) {

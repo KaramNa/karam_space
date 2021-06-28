@@ -36,11 +36,5 @@ function edit_done() {
   edit_btn.classList.remove("d-none");
   delete_btn.classList.remove("d-none");
   new_comment.classList.add("d-none");
-  date.classList.add("d-none");
-  // window.location =
-  //   "/network/edit_comment.php?id=" + comment_id + "&comment=" + comment.value;
+  date.classList.remove("d-none");
 }
-
-// function checksignup(){
-
-// }

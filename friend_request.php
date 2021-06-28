@@ -107,31 +107,32 @@ if (isset($_POST["action"])) {
         $posted_by = $firstname . " " . $lastname;
         if ($con->query("INSERT INTO comments(post_id,posted_by, comment_content) VALUES('$post_id', '$request_from_id', '$comment_content')")) {
             $comment_id = $con->insert_id;
-        }
-        $output .= '
-        <div class="row mt-1">
-            <div class="col-lg-1 col-md-2"><img class="img-fluid img-comment" src="' .  $user_image . '" alt=""></div>
+
+            $output .= '
+            <div class="row mt-1">
+            <div class="col-lg-1 col-md-2"><img class="img-fluid img-comment" src="' . $user_image . '" alt=""></div>
             <div class="col-lg-11 col-md-10">
                 <div class="bg-light rounded p-1">
                     <p class="mb-0 text-capitalize"><strong>' . $posted_by . '</strong></p>
-                    <div id="new_comment" class="d-none" data-id="div"' . $comment_id . '">
-                        <textarea class="form-control" id="new_comment_content" rows="2" placeholder="Enter a comment" data-id="textarea" ' . $comment_id . '"></textarea>
-                        <button class="link-button small" onclick="edit_done()">Done</button>
+                    <div id="new_comment" class="d-none" data-id="div' . $comment_id . '">
+                        <textarea class="form-control" id="new_comment_content" rows="2" placeholder="Enter a comment" data-id="textarea' . $comment_id . '"></textarea>
+                        <button class="link-button small done_comment_edit" value="' . $comment_id . '">Done</button>
                         <button class="link-button small" onclick="edit_cancel()">Cancel</button>
                     </div>
-                    <p id="old_comment" class="" data-id="p" ' . $comment_id . '">' .  $comment_content . '</p>
+                    <p id="old_comment" class="old_comment text-break" data-id="p' . $comment_id . '">' . $comment_content . '</p>
                 </div>
                 <div class="d-flex justify-content-between">
                     <div>
-                        <span class="small"><button class="link-button" id="edit_comment" onclick="edit_comment(this.value)" value="' . $comment_id . '" data-id="edit_btn"' . $comment_id . '">Edit</button></span>
-                        <span class="small"><a id="delete_comment" href="delete_comment.php?id="' . $comment_id . '" class="link" data-id="delete_btn"' . $comment_id . '">Delete</a></span>
+                        <span class="small"><button class="link-button" id="edit_comment" onclick="edit_comment(this.value)" value="' . $comment_id . '" data-id="edit_btn' . $comment_id . '">Edit</button></span>
+                        <span class="small"><button class="link-button small delete_comment" value="' .$comment_id . '">Delete</button></span>
                     </div>
-                    <span class="small" data-id="date" ' . $comment_id . '">' . $time . '</span>
+                    <span class="small" data-id="date' . $comment_id . '">' . $time . '</span>
                 </div>
             </div>
         </div>
         ';
-        echo $output;
+            echo $output;
+        }
     }
 
     if ($action == "edit_comment") {
@@ -139,5 +140,10 @@ if (isset($_POST["action"])) {
         $comment_content = $_POST["new_comment_content"];
         $time = date("Y-m-d H:i:s");
         $con->query("UPDATE comments SET comment_content = '$comment_content', comment_date = '$time' WHERE comment_id='$comment_id'");
+        echo $comment_content;
+    }
+    if ($action == "delete_comment") {
+        $comment_id = $_POST["comment_id"];
+        $con->query("DELETE FROM comments  WHERE comment_id = '$comment_id'");
     }
 }
