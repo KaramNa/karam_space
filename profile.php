@@ -57,6 +57,7 @@ $user = $query->fetch_assoc();
             <div class="col-sm-4">
                 <img class="rounded-circle img-fluid mt-5" src="<?php echo $user['profile_picture'] ?>" alt="">
                 <?php
+                $friend_request_id = 0;
                 if ($request_from_id != $request_to_id) {
                     $query_sent = "SELECT * FROM friend_request WHERE
                                 request_from_id = '$request_from_id' AND request_to_id = '$request_to_id'";
@@ -65,7 +66,6 @@ $user = $query->fetch_assoc();
                     $sent_result = $con->query($query_sent);
                     $recieve_result =  $con->query($query_recieve);
                     $friends = false;
-                    $friend_request_id = 0;
                     if ($sent_result->num_rows > 0) {
                         $result = $sent_result->fetch_assoc();
                         $request_status = $result["request_status"];
@@ -119,23 +119,23 @@ $user = $query->fetch_assoc();
                     <p>Gender: <b class="text-capitalize"><?php echo $user["gender"] ?></b></p>
                     <p>Birthday: <b class="text-capitalize"><?php echo $user["birthday"] ?></b></p>
                 </div>
-                <div class="row border mt-3 p-1 justify-content-between align-items-center">
-                    <div class="row">
+                <div class="row border  mt-3 p-1">
+                    <div class="row p-0 m-0  align-items-center">
                         <div class="col-md-4">
-                            <h5 class="m-0">Friend list</h5>
+                            <h5 class="m-0">Friends</h5>
                         </div>
-                        <div class="col-md-8">
-                            <input type="text" id="search_friend_list" placeholder="Search list">
+                        <div class="col-md-8 m-0 p-0">
+                            <input class="form-control" type="text" id="search_friend_list" placeholder="Search list">
                         </div>
                     </div>
-                    <div class="row mt-2 border">
+                    <div class="row m-0 mt-2 border">
                         <ul id="friend_list">
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="col-md-8">
-                <?php $request_to_id = $_SESSION["user_id"];
+                <?php
                 $query = $con->query("SELECT * FROM users JOIN posts ON users.user_id=$request_to_id AND posts.user_id=$request_to_id ORDER BY post_id DESC");
                 while ($row = $query->fetch_assoc()) {
                     $posted_by = $row["firstname"] . " " . $row["lastname"];
@@ -210,9 +210,6 @@ $user = $query->fetch_assoc();
         <?php } ?>
         </div>
     </div>
-    </div>
-
-
 
     <script>
         $(document).ready(function() {
@@ -265,21 +262,31 @@ $user = $query->fetch_assoc();
 
             });
 
-            $("#search_friend_list").keyup(function(){
-                var action = "load_friend_list"; 
-                var query = $(this).val();
+            function load_friends(query = "") {
+                var action = "load_friend_list";
                 $.ajax({
-                    url:"frined_request.php",
+                    url: "friend_request.php",
                     method: "POST",
-                    data:{
-                        query:query,
-                        action:action
+                    data: {
+                        query: query,
+                        action: action,
+                        user_id : <?php echo $request_to_id ?>
                     },
-                    success: function(data){
+                    success: function(data) {
+                        console.log(data);
                         $("#friend_list").html(data);
                     }
                 });
+            }
+            $("#search_friend_list").keyup(function() {
+                var val = $(this).val();
+                if (val != "") {
+                    load_friends(val);
+                } else {
+                    load_friends();
+                }
             });
+            load_friends();
         });
     </script>
 </body>

@@ -64,16 +64,16 @@
             $target_file = $target_dir . basename($_FILES["upload_user_image"]["name"]);
             if (move_uploaded_file($_FILES["upload_user_image"]["tmp_name"], $target_file)) {
                 $location = "images/profile_pictures/" . $_FILES["upload_user_image"]["name"];
-                $request_to_id = $_SESSION["user_id"];
-                $con->query("UPDATE users SET profile_picture = '$location' WHERE user_id = '$request_to_id'");
+                $user_id = $_SESSION["user_id"];
+                $con->query("UPDATE users SET profile_picture = '$location' WHERE user_id = '$user_id'");
             }
         }
     }
     ?>
     <!-- user info -->
     <?php
-    $request_to_id = $_SESSION["user_id"];
-    $location = $con->query("SELECT profile_picture FROM users WHERE user_id='$request_to_id'")->fetch_assoc()["profile_picture"];
+    $user_id = $_SESSION["user_id"];
+    $location = $con->query("SELECT profile_picture FROM users WHERE user_id='$user_id'")->fetch_assoc()["profile_picture"];
     ?>
     <div class="container mt-5">
         <div class="row">
@@ -108,8 +108,7 @@
                     </div>
                 </div>
                 <?php
-                $request_to_id = $_SESSION["user_id"];
-                $query = $con->query("SELECT * FROM users JOIN posts ON users.user_id=$request_to_id AND posts.user_id=$request_to_id ORDER BY post_id DESC");
+                $query = $con->query("SELECT * FROM users JOIN posts ON users.user_id=$user_id AND posts.user_id=$user_id ORDER BY post_id DESC");
                 while ($row = $query->fetch_assoc()) {
                     $posted_by = $row["firstname"] . " " . $row["lastname"];
                     $post_image = $row["post_image"];
@@ -134,7 +133,7 @@
                             <div class="row my-4 ps-4"><?php echo $content ?></div>
                             <div class="row"><img class="img-fluid" src="<?php echo $post_image ?>" alt=""></div>
                         </div>
-                        <div class="row mt-3">
+                        <div id="comments" class="row mt-3">
                             <?php
                             $comment = $con->query("SELECT * FROM comments WHERE post_id = '$post_id' ORDER BY post_id DESC");
                             while ($row = $comment->fetch_assoc()) {
@@ -150,7 +149,7 @@
                                             <p class="mb-0 text-capitalize"><strong><?php echo $posted_by ?></strong></p>
                                             <div id="new_comment" class="d-none" data-id="<?php echo "div" . $comment_id ?>">
                                                 <textarea class="form-control" id="new_comment_content" rows="2" placeholder="Enter a comment" data-id="<?php echo "textarea" . $comment_id ?>"></textarea>
-                                                <button class="link-button small" onclick="edit_done()">Done</button>
+                                                <button class="link-button small done-comment-edit" value="<?php echo $comment_id ?>">Done</button>
                                                 <button class="link-button small" onclick="edit_cancel()">Cancel</button>
                                             </div>
                                             <p id="old_comment" class="" data-id="<?php echo "p" . $comment_id ?>"><?php echo $comment_content ?></p>
@@ -167,14 +166,14 @@
 
                             <?php } ?>
                             <!-- add a comment -->
-                            <form action="add_comment.php" method="POST">
+                            <form class="add_comment_form" action="add_comment.php" method="POST">
                                 <div class="row border justify-content-center py-3 my-3 mx-1">
                                     <div class="col-lg-10  col-md-8  pe-1">
-                                        <textarea class="form-control" name="comment" rows="2" placeholder="Enter a comment"></textarea>
-                                        <input type="text" name="post_id" value="<?php echo $post_id ?>" hidden>
+                                        <textarea data-postid="<?php echo $post_id ?>" class="form-control comment_content" name="comment" rows="2" placeholder="Enter a comment"></textarea>
+                                        <input type="text" name="post_id" class="post_id" value="<?php echo $post_id ?>" hidden>
                                     </div>
                                     <div class="col-lg-2 col-md-4 mt-2">
-                                        <button type="submit" class="btn btn-secondary">Comment</button>
+                                        <button type="button" class="btn btn-secondary add_comment" value="<?php echo $post_id ?>">Comment</button>
                                     </div>
                             </form>
                         </div>
@@ -215,49 +214,90 @@
     <script src="js/script.js"></script>
     <script>
         $(document).ready(function() {
-                $("#search").keyup(function() {
-                    var query = $(this).val();
-                    if (query != "") {
-                        $.ajax({
-                            url: "search_action.php",
-                            method: "POST",
-                            data: {
-                                query: query
-                            },
-                            success: function(data) {
-                                $("#search_result").html(data);
-                            }
-                        });
-                    } else {
-                        $("#search_result").html("");
-                    }
+            $("#search").keyup(function() {
+                var query = $(this).val();
+                if (query != "") {
+                    $.ajax({
+                        url: "search_action.php",
+                        method: "POST",
+                        data: {
+                            query: query
+                        },
+                        success: function(data) {
+                            $("#search_result").html(data);
+                        }
+                    });
+                } else {
+                    $("#search_result").html("");
+                }
 
+            });
+            $(".add_comment").click(function() {
+                var action = "add_comment";
+                var thisbtn = $(this).parent().parent().parent();
+                comment_content = $(this).parent().siblings().find(".comment_content");
+                $.ajax({
+                    url: "friend_request.php",
+                    method: "POST",
+                    data: {
+                        action: action,
+                        post_id: $(this).val(),
+                        comment_content: comment_content.val()
+
+                    },
+                    success: function(data) {
+                       $(data).insertBefore(thisbtn);
+                       comment_content.val("");
+                    }
                 });
+
+            });
+            $(".done-comment-edit").click(function(){
+                var action = "edit_comment";
+                var comment_id = $(this).val();
+                var new_comment_content = $(this).siblings("textarea");
+                $.ajax({
+                    url: "friend_request.php",
+                    method: "POSt",
+                    data:{
+                        action: action,
+                        comment_id: comment_id,
+                        new_comment_content: new_comment_content.val()
+                    },
+                    success:function(data){
+                        new_comment_content.val(new_comment_content.val());
+                        edit_done();
+                    }
+                });
+
+
+            });
+            
             var friend_request_seen = false;
             $("#friend_request_area").click(function() {
                 if (!friend_request_seen) {
-                load_friends_request_list();
-                friend_request_seen = true;
+                    load_friends_request_list();
+                    friend_request_seen = true;
                 }
             });
 
-                function count_un_seen_friend_request() {
-                    var action = 'count_un_seen_friend_request';
+            function count_un_seen_friend_request() {
+                var action = 'count_un_seen_friend_request';
 
-                    $.ajax({
-                        url: "friend_request.php",
-                        method: "POST",
-                        data: {
-                            action: action
-                        },
-                        success: function(data) {
-                            if (data > 0) {
-                                $('#unseen_friend_request_area').html('<span class="label text-danger">' + data + '</span>');
-                                friend_request_seen = false;
-                            }
+                $.ajax({
+                    url: "friend_request.php",
+                    method: "POST",
+                    data: {
+                        action: action
+                    },
+                    success: function(data) {
+                        if (data > 0) {
+                            $('#unseen_friend_request_area').html('<span class="label text-danger">' + data + '</span>');
+                            friend_request_seen = false;
                         }
-                    })
-                }
+                    }
+                })
+            }
             count_un_seen_friend_request();
             setInterval(function() {
                 count_un_seen_friend_request();
@@ -283,7 +323,7 @@
 
                 });
             }
-            
+
 
             function remove_friend_request_count() {
                 var action = "remove_friend_request_count";
