@@ -92,7 +92,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-sm-8 mt-3">
+            <div class="col-sm-8 mt-3 posts">
                 <div class="border p-3">
                     <!-- update status -->
                     <div>
@@ -108,79 +108,110 @@
                     </div>
                 </div>
                 <?php
-                $query = $con->query("SELECT * FROM users JOIN posts ON users.user_id=$user_id AND posts.user_id=$user_id ORDER BY post_id DESC");
-                while ($row = $query->fetch_assoc()) {
-                    $posted_by = $row["firstname"] . " " . $row["lastname"];
-                    $post_image = $row["post_image"];
-                    $user_image = $row["profile_picture"];
-                    $content = $row["post_content"];
-                    $post_id = $row["post_id"];
-                    $post_date = $row["post_date"];
+                $friends = $con->query("
+                        SELECT * FROM friend_request WHERE request_from_id = '$user_id' OR request_to_id = '$user_id' 
+                        AND request_status = 'confirm'");
+                $flag = 0;
+                do {
+                    if ($flag == 0) {
+                        $friend_id = $user_id;
+                        $flag = 1;
+                    } elseif ($frined["request_from_id"] == $user_id) {
+                        $friend_id = $frined["request_to_id"];
+                    } elseif ($frined["request_to_id"] == $user_id) {
+                        $friend_id = $frined["request_from_id"];
+                    }
+                    $query = $con->query("SELECT * FROM users JOIN posts ON users.user_id=$friend_id AND posts.user_id=$friend_id ORDER BY post_id DESC");
+                    while ($row = $query->fetch_assoc()) {
+                        $posted_by = $row["firstname"] . " " . $row["lastname"];
+                        $post_image = $row["post_image"];
+                        $user_image = $row["profile_picture"];
+                        $content = $row["post_content"];
+                        $post_id = $row["post_id"];
+                        $post_date = $row["post_date"];
+                        $posted_by_id = $row["user_id"];
                 ?>
-                    <!-- show posts -->
-                    <div class="border p-3 my-3">
-                        <div class="row">
-                            <div class="col-sm-2">
-                                <div class=""><img class="img-fluid rounded-circle" src="<?php echo $user_image ?>" alt=""></div>
-                            </div>
-                            <div class="col-sm-9 d-flex flex-column justify-content-center">
-                                <div class="text-capitalize"><?php echo $posted_by ?></div>
-                                <span><?php echo $post_date ?></span>
-                            </div>
-                            <div class="col-sm-1 ps-2"><a href="delete_post.php<?php echo '?id=' . $post_id ?>" class="nav-link text-secondary">X</a></div>
-                        </div>
-                        <div class="row justify-content-center">
-                            <div class="row my-4 ps-4"><?php echo $content ?></div>
-                            <div class="row"><img class="img-fluid" src="<?php echo $post_image ?>" alt=""></div>
-                        </div>
-                        <div id="comments" class="row mt-3">
-                            <?php
-                            $comment = $con->query("SELECT * FROM comments WHERE post_id = '$post_id' ORDER BY post_id DESC");
-                            while ($row = $comment->fetch_assoc()) {
-                                $comment_id = $row["comment_id"];
-                                $comment_content = $row["comment_content"];
-                                $comment_date = $row["comment_date"];
-                            ?>
-                                <!-- show comments -->
-                                <div class="row mt-1 comment_to_remove">
-                                    <div class="col-lg-1 col-md-2"><img class="img-fluid img-comment" src="<?php echo $user_image ?>" alt=""></div>
-                                    <div class="col-lg-11 col-md-10">
-                                        <div class="bg-light rounded p-1">
-                                            <p class="mb-0 text-capitalize"><strong><?php echo $posted_by ?></strong></p>
-                                            <div id="new_comment" class="d-none" data-id="<?php echo "div" . $comment_id ?>">
-                                                <textarea class="form-control" id="new_comment_content" rows="2" placeholder="Enter a comment" data-id="<?php echo "textarea" . $comment_id ?>"></textarea>
-                                                <button class="link-button small done_comment_edit" value="<?php echo $comment_id ?>">Done</button>
-                                                <button class="link-button small" onclick="edit_cancel()">Cancel</button>
-                                            </div>
-                                            <p id="old_comment" class="old_comment text-break" data-id="<?php echo "p" . $comment_id ?>"><?php echo $comment_content ?></p>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <div>
-                                                <span class="small"><button class="link-button" id="edit_comment" onclick="edit_comment(this.value)" value="<?php echo $comment_id ?>" data-id="<?php echo "edit_btn" . $comment_id ?>">Edit</button></span>
-                                                <span class="small"><button class="link-button small delete_comment" value="<?php echo $comment_id ?>">Delete</button></span>
-                                            </div>
-                                            <span class="small" data-id="<?php echo "date" . $comment_id ?>"><?php echo $comment_date ?></span>
-                                        </div>
-                                    </div>
+                        <!-- show posts -->
+                        <div class="border container-fluid pt-2 mt-3">
+                            <div class="row">
+                                <div class="col-lg-2 col-md-3 col-4">
+                                    <div class=""><img class="img-size rounded-circle" src="<?php echo $user_image ?>" alt=""></div>
                                 </div>
+                                <div class="col-lg-9 col-md-8 col-7 d-flex flex-column justify-content-center">
+                                    <div class="text-capitalize"><?php echo $posted_by ?></div>
+                                    <span><?php echo $post_date ?></span>
+                                </div>
+                                <div class="col-1 ps-2">
+                                    <?php
+                                    if ($user_id == $posted_by_id) {
+                                    ?>
+                                        <a href="delete_post.php<?php echo '?id=' . $post_id ?>" class="nav-link text-secondary">X</a>
+                                    <?php
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center">
+                                <div class="row my-4 ps-4"><?php echo $content ?></div>
+                                <div class="row"><img class="img-fluid" src="<?php echo $post_image ?>" alt=""></div>
+                            </div>
+                            <div id="comments" class="row mt-3">
+                                <!-- add a comment -->
+                                <div class="add_comment_form">
+                                    <div class="row border justify-content-center py-3 my-3 mx-1">
+                                        <div class="col-lg-10  col-md-8  pe-1">
+                                            <textarea data-postid="<?php echo $post_id ?>" class="form-control comment_content" name="comment" rows="2" placeholder="Enter a comment"></textarea>
+                                            <input type="text" name="post_id" class="post_id" value="<?php echo $post_id ?>" hidden>
+                                        </div>
+                                        <div class="col-lg-2 col-md-4 mt-2">
+                                            <button type="button" class="btn btn-secondary add_comment" value="<?php echo $post_id ?>">Comment</button>
+                                        </div>
+                                </div>
+                                <?php
+                                $comment = $con->query("SELECT * FROM comments LEFT JOIN users ON comments.posted_by = users.user_id WHERE post_id = '$post_id' ORDER BY comments.comment_id");
+                                while ($row = $comment->fetch_assoc()) {
+                                    $comment_id = $row["comment_id"];
+                                    $comment_content = $row["comment_content"];
+                                    $comment_date = $row["comment_date"];
+                                    $user_image = $row["profile_picture"];
+                                    $commented_by = $row["firstname"] . " " . $row["lastname"];
+                                    $commented_by_id = $row["posted_by"];
+                                ?>
+                                    <!-- show comments -->
+                                    <div class="row mt-1 comment_to_remove">
+                                        <div class="col-lg-1 col-md-2 col-2"><img class=" img-comment" src="<?php echo $user_image ?>" alt=""></div>
+                                        <div class="col-lg-11 col-md-10 col-10 make-space">
+                                            <div class="bg-light  p-1">
+                                                <p class="mb-0 text-capitalize"><strong><?php echo $commented_by ?></strong></p>
+                                                <div id="new_comment" class="d-none" data-id="<?php echo "div" . $comment_id ?>">
+                                                    <textarea class="form-control" id="new_comment_content" rows="2" placeholder="Enter a comment" data-id="<?php echo "textarea" . $comment_id ?>"></textarea>
+                                                    <button class="link-button small done_comment_edit" value="<?php echo $comment_id ?>">Done</button>
+                                                    <button class="link-button small" onclick="edit_cancel()">Cancel</button>
+                                                </div>
+                                                <p id="old_comment" class="old_comment text-break p-1" data-id="<?php echo "p" . $comment_id ?>"><?php echo $comment_content ?></p>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <?php
+                                                    if ($user_id == $commented_by_id) {
+                                                    ?>
+                                                        <span class="small"><button class="link-button" id="edit_comment" onclick="edit_comment(this.value)" value="<?php echo $comment_id ?>" data-id="<?php echo "edit_btn" . $comment_id ?>">Edit</button></span>
+                                                        <span class="small"><button class="link-button small delete_comment" value="<?php echo $comment_id ?>" data-id="<?php echo "delete_btn" . $comment_id ?>">Delete</button></span>
+                                                    <?php } ?>
+                                                </div>
+                                                <span class="small" data-id="<?php echo "date" . $comment_id ?>"><?php echo $comment_date ?></span>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                            <?php } ?>
-                            <!-- add a comment -->
-                            <form class="add_comment_form" action="add_comment.php" method="POST">
-                                <div class="row border justify-content-center py-3 my-3 mx-1">
-                                    <div class="col-lg-10  col-md-8  pe-1">
-                                        <textarea data-postid="<?php echo $post_id ?>" class="form-control comment_content" name="comment" rows="2" placeholder="Enter a comment"></textarea>
-                                        <input type="text" name="post_id" class="post_id" value="<?php echo $post_id ?>" hidden>
-                                    </div>
-                                    <div class="col-lg-2 col-md-4 mt-2">
-                                        <button type="button" class="btn btn-secondary add_comment" value="<?php echo $post_id ?>">Comment</button>
-                                    </div>
-                            </form>
+                                <?php } ?>
+
+                            </div>
                         </div>
-                    </div>
             </div>
-        <?php } ?>
-        <!-- End while loop -->
+    <?php }
+                } while ($frined = $friends->fetch_assoc()); ?>
+    <!-- End while loop -->
         </div>
     </div>
     </div>
@@ -234,7 +265,7 @@
             });
             $(".add_comment").click(function() {
                 var action = "add_comment";
-                var thisbtn = $(this).parent().parent().parent();
+                var thisbtn = $(this).parents(".add_comment_form");
                 comment_content = $(this).parent().siblings().find(".comment_content");
                 $.ajax({
                     url: "friend_request.php",
@@ -246,52 +277,47 @@
 
                     },
                     success: function(data) {
-                       $(data).insertBefore(thisbtn);
-                       comment_content.val("");
+                        thisbtn.append(data);
+                        comment_content.val("");
                     }
                 });
 
             });
-            $(".done_comment_edit").click(function(){
+            $(".done_comment_edit").click(function() {
                 var action = "edit_comment";
                 var comment_id = $(this).val();
                 var new_comment_content = $(this).siblings("textarea");
                 var edited_paragraph = $(this).parent().parent().find(".old_comment");
-                console.log(comment_id);
-                console.log(new_comment_content);
                 $.ajax({
                     url: "friend_request.php",
                     method: "POSt",
-                    data:{
+                    data: {
                         action: action,
                         comment_id: comment_id,
                         new_comment_content: new_comment_content.val()
                     },
-                    success:function(data){
+                    success: function(data) {
                         edited_paragraph.html(data);
                         edit_done();
                     }
                 });
-
-
             });
-            $(".delete_comment").click(function(){
+            $(".delete_comment").click(function() {
+                console.log("dddddddd");
                 var action = "delete_comment";
                 var comment_id = $(this).val();
                 var remove_comment = $(this).parents(".comment_to_remove");
                 $.ajax({
                     url: "friend_request.php",
                     method: "POSt",
-                    data:{
+                    data: {
                         action: action,
                         comment_id: comment_id,
                     },
-                    success:function(data){
+                    success: function(data) {
                         remove_comment.html("");
                     }
                 });
-
-
             });
             var friend_request_seen = false;
             $("#friend_request_area").click(function() {

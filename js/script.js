@@ -8,6 +8,7 @@ var comment_id;
 
 function edit_comment(id) {
   comment_id = id;
+  console.log(id);
   old_comment = document.querySelector("[data-id= p" + comment_id + "]");
   new_comment = document.querySelector("[data-id= div" + comment_id + "]");
   comment = document.querySelector("[data-id= textarea" + comment_id + "]");

@@ -22,23 +22,39 @@
   text-decoration: none;
 }
 
-.img-comment{
+.img-comment {
   margin-left: 12px;
+  width:40px;
 }
 
-.link-button{
+.link-button {
   background: none;
   border: none;
   color: #0d6efd;
 }
-.link-button:hover{
+.link-button:hover {
   color: #5958cd;
 }
 
-.user-image{
+.user-image {
   cursor: pointer;
 }
 
-.error{
+.error {
   color: red;
+}
+
+.img-size {
+  width:100px;
+}
+
+@media only screen and (min-width: 576px) and (max-width: 768px){
+  .make-space{
+    padding-left: 1.5rem!important;
+  }
+  
+}
+
+.posts:last-child{
+  margin-bottom: 30px;
 }

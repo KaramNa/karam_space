@@ -124,7 +124,7 @@ if (isset($_POST["action"])) {
                 <div class="d-flex justify-content-between">
                     <div>
                         <span class="small"><button class="link-button" id="edit_comment" onclick="edit_comment(this.value)" value="' . $comment_id . '" data-id="edit_btn' . $comment_id . '">Edit</button></span>
-                        <span class="small"><button class="link-button small delete_comment" value="' .$comment_id . '">Delete</button></span>
+                        <span class="small"><button class="link-button small delete_comment" value="' .$comment_id . '" data-id="delete_btn' . $comment_id . '">Delete</button></span>
                     </div>
                     <span class="small" data-id="date' . $comment_id . '">' . $time . '</span>
                 </div>
