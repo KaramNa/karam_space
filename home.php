@@ -79,7 +79,7 @@
         <div class="row">
             <div class="col-sm-4">
                 <div class="col-12 mt-3 text-center">
-                    <img class="img-fluid rounded-circle user-image" src="<?php echo $location ?>" alt="" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    <img class="rounded-circle user-image" src="<?php echo $location ?>" alt="" data-bs-toggle="modal" data-bs-target="#staticBackdrop" width="200px" height="200px">
                 </div>
                 <div class="col-12">
                     <ul class="navbar-nav border mt-3 p-4">
@@ -132,16 +132,17 @@
                         $posted_by_id = $row["user_id"];
                 ?>
                         <!-- show posts -->
-                        <div class="border container-fluid pt-2 mt-3">
-                            <div class="row">
-                                <div class="col-lg-2 col-md-3 col-4">
-                                    <div class=""><img class="img-size rounded-circle" src="<?php echo $user_image ?>" alt=""></div>
+                        <div class="border container-fluid p-0 mt-3">
+                            <div class="row mt-3">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-4">
+                                    <div class=""><img class="img-size rounded-circle ms-3" src="<?php echo $user_image ?>" alt=""></div>
                                 </div>
-                                <div class="col-lg-9 col-md-8 col-7 d-flex flex-column justify-content-center">
+                                <div class="col-xl-8 col-lg-7 col-md-7 col-6 d-flex flex-column justify-content-center">
                                     <div class="text-capitalize"><?php echo $posted_by ?></div>
                                     <span><?php echo $post_date ?></span>
                                 </div>
-                                <div class="col-1 ps-2">
+
+                                <div class="col-2 d-flex justify-content-end">
                                     <?php
                                     if ($user_id == $posted_by_id) {
                                     ?>
@@ -151,10 +152,10 @@
                                     ?>
                                 </div>
                             </div>
-                            <div class="row justify-content-center">
-                                <div class="row my-4 ps-4"><?php echo $content ?></div>
-                                <div class="row"><img class="img-fluid" src="<?php echo $post_image ?>" alt=""></div>
-                            </div>
+                            <!-- <div class="row justify-content-center"> -->
+                            <div class="row my-4 ps-5"><?php echo $content ?></div>
+                            <div class=""><img class="img-fluid" src="<?php echo $post_image ?>" alt=""></div>
+                            <!-- </div> -->
                             <div id="comments" class="row mt-3">
                                 <!-- add a comment -->
                                 <div class="add_comment_form">
@@ -166,54 +167,54 @@
                                         <div class="col-lg-2 col-md-4 mt-2">
                                             <button type="button" class="btn btn-secondary add_comment" value="<?php echo $post_id ?>">Comment</button>
                                         </div>
-                                </div>
-                                <?php
-                                $comment = $con->query("SELECT * FROM comments LEFT JOIN users ON comments.posted_by = users.user_id WHERE post_id = '$post_id' ORDER BY comments.comment_id");
-                                while ($row = $comment->fetch_assoc()) {
-                                    $comment_id = $row["comment_id"];
-                                    $comment_content = $row["comment_content"];
-                                    $comment_date = $row["comment_date"];
-                                    $user_image = $row["profile_picture"];
-                                    $commented_by = $row["firstname"] . " " . $row["lastname"];
-                                    $commented_by_id = $row["posted_by"];
-                                ?>
-                                    <!-- show comments -->
-                                    <div class="row mt-1 comment_to_remove">
-                                        <div class="col-lg-1 col-md-2 col-2"><img class=" img-comment" src="<?php echo $user_image ?>" alt=""></div>
-                                        <div class="col-lg-11 col-md-10 col-10 make-space">
-                                            <div class="bg-light  p-1">
-                                                <p class="mb-0 text-capitalize"><strong><?php echo $commented_by ?></strong></p>
-                                                <div id="new_comment" class="d-none" data-id="<?php echo "div" . $comment_id ?>">
-                                                    <textarea class="form-control" id="new_comment_content" rows="2" placeholder="Enter a comment" data-id="<?php echo "textarea" . $comment_id ?>"></textarea>
-                                                    <button class="link-button small done_comment_edit" value="<?php echo $comment_id ?>">Done</button>
-                                                    <button class="link-button small" onclick="edit_cancel()">Cancel</button>
+                                    </div>
+                                    <?php
+                                    $comment = $con->query("SELECT * FROM comments LEFT JOIN users ON comments.posted_by = users.user_id WHERE post_id = '$post_id' ORDER BY comments.comment_id");
+                                    while ($row = $comment->fetch_assoc()) {
+                                        $comment_id = $row["comment_id"];
+                                        $comment_content = $row["comment_content"];
+                                        $comment_date = $row["comment_date"];
+                                        $user_image = $row["profile_picture"];
+                                        $commented_by = $row["firstname"] . " " . $row["lastname"];
+                                        $commented_by_id = $row["posted_by"];
+                                    ?>
+                                        <!-- show comments -->
+                                        <div class="row mt-1 comment_to_remove">
+                                            <div class="col-xl-1 col-lg-2 col-md-2 col-2"><img class=" img-comment" src="<?php echo $user_image ?>" alt=""></div>
+                                            <div class="col-xl-11 col-lg-10 col-md-10 col-10 make-space">
+                                                <div class="bg-light me-2 p-1">
+                                                    <p class="mb-0 text-capitalize"><strong><?php echo $commented_by ?></strong></p>
+                                                    <div id="new_comment" class="d-none" data-id="<?php echo "div" . $comment_id ?>">
+                                                        <textarea class="form-control" id="new_comment_content" rows="2" placeholder="Enter a comment" data-id="<?php echo "textarea" . $comment_id ?>"></textarea>
+                                                        <button class="link-button small done_comment_edit" value="<?php echo $comment_id ?>">Done</button>
+                                                        <button class="link-button small" onclick="edit_cancel()">Cancel</button>
+                                                    </div>
+                                                    <p id="old_comment" class="old_comment text-break p-1" data-id="<?php echo "p" . $comment_id ?>"><?php echo $comment_content ?></p>
                                                 </div>
-                                                <p id="old_comment" class="old_comment text-break p-1" data-id="<?php echo "p" . $comment_id ?>"><?php echo $comment_content ?></p>
-                                            </div>
-                                            <div class="d-flex justify-content-between">
-                                                <div>
-                                                    <?php
-                                                    if ($user_id == $commented_by_id) {
-                                                    ?>
-                                                        <span class="small"><button class="link-button" id="edit_comment" onclick="edit_comment(this.value)" value="<?php echo $comment_id ?>" data-id="<?php echo "edit_btn" . $comment_id ?>">Edit</button></span>
-                                                        <span class="small"><button class="link-button small delete_comment" value="<?php echo $comment_id ?>" data-id="<?php echo "delete_btn" . $comment_id ?>">Delete</button></span>
-                                                    <?php } ?>
+                                                <div class="d-flex me-2 justify-content-between">
+                                                    <div>
+                                                        <?php
+                                                        if ($user_id == $commented_by_id) {
+                                                        ?>
+                                                            <span class="small"><button class="link-button ps-0" id="edit_comment" onclick="edit_comment(this.value)" value="<?php echo $comment_id ?>" data-id="<?php echo "edit_btn" . $comment_id ?>">Edit</button></span>
+                                                            <span class="small"><button class="link-button small delete_comment" value="<?php echo $comment_id ?>" data-id="<?php echo "delete_btn" . $comment_id ?>">Delete</button></span>
+                                                        <?php } ?>
+                                                    </div>
+                                                    <span class="small" data-id="<?php echo "date" . $comment_id ?>"><?php echo $comment_date ?></span>
                                                 </div>
-                                                <span class="small" data-id="<?php echo "date" . $comment_id ?>"><?php echo $comment_date ?></span>
                                             </div>
                                         </div>
-                                    </div>
 
-                                <?php } ?>
+                                    <?php } ?>
 
+                                </div>
                             </div>
                         </div>
-            </div>
-    <?php }
+                <?php }
                 } while ($frined = $friends->fetch_assoc()); ?>
-    <!-- End while loop -->
+                <!-- End while loop -->
+            </div>
         </div>
-    </div>
     </div>
     <footer class="text-center text-light bg-dark fixed-bottom">&copy; 2021 Copyright: <strong>Karam Nassar</strong></footer>
 

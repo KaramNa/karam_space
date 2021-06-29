@@ -45,7 +45,8 @@
 }
 
 .img-size {
-  width:100px;
+  width:40px;
+  height:40px;
 }
 
 @media only screen and (min-width: 576px) and (max-width: 768px){
