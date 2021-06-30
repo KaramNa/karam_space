@@ -1,8 +1,8 @@
-var old_comment; /* = document.getElementById("old_comment");*/
-var new_comment;/* = document.getElementById("new_comment");*/
-var edit_btn;/* = document.getElementById("edit_comment");*/
-var delete_btn;/* = document.getElementById("delete_comment");*/
-var comment;/* = document.getElementById("new_comment_content");*/
+var old_comment;
+var new_comment;
+var edit_btn;
+var delete_btn;
+var comment;
 var date;
 var comment_id;
 

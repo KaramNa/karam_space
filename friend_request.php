@@ -109,21 +109,21 @@ if (isset($_POST["action"])) {
             $comment_id = $con->insert_id;
 
             $output .= '
-            <div class="row mt-1">
-            <div class="col-lg-1 col-md-2"><img class="img-fluid img-comment" src="' . $user_image . '" alt=""></div>
-            <div class="col-lg-11 col-md-10">
+            <div class="row mt-1 comment_to_remove">
+            <div class="col-xl-1 col-lg-2 col-md-2 col-2"><img class="img-size rounded-circle ms-3 img-comment" src="' . $user_image . '" alt=""></div>
+            <div class="col-xl-11 col-lg-10 col-md-10 col-10 make-space ps-1">
                 <div class="bg-light rounded p-1">
                     <p class="mb-0 text-capitalize"><strong>' . $posted_by . '</strong></p>
                     <div id="new_comment" class="d-none" data-id="div' . $comment_id . '">
-                        <textarea class="form-control" id="new_comment_content" rows="2" placeholder="Enter a comment" data-id="textarea' . $comment_id . '"></textarea>
+                        <textarea class="form-control" id="new_comment_content" rows="1" placeholder="Enter a comment" data-id="textarea' . $comment_id . '"></textarea>
                         <button class="link-button small done_comment_edit" value="' . $comment_id . '">Done</button>
                         <button class="link-button small" onclick="edit_cancel()">Cancel</button>
                     </div>
-                    <p id="old_comment" class="old_comment text-break" data-id="p' . $comment_id . '">' . $comment_content . '</p>
+                    <p id="old_comment" class="old_comment text-break mb-0" data-id="p' . $comment_id . '">' . $comment_content . '</p>
                 </div>
-                <div class="d-flex justify-content-between">
+                <div class="d-flex me-2 justify-content-between">
                     <div>
-                        <span class="small"><button class="link-button" id="edit_comment" onclick="edit_comment(this.value)" value="' . $comment_id . '" data-id="edit_btn' . $comment_id . '">Edit</button></span>
+                        <span class="small"><button class="link-button ps-0" id="edit_comment" onclick="edit_comment(this.value)" value="' . $comment_id . '" data-id="edit_btn' . $comment_id . '">Edit</button></span>
                         <span class="small"><button class="link-button small delete_comment" value="' .$comment_id . '" data-id="delete_btn' . $comment_id . '">Delete</button></span>
                     </div>
                     <span class="small" data-id="date' . $comment_id . '">' . $time . '</span>

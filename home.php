@@ -98,7 +98,7 @@
                     <div>
                         <h1>Update Status</h1>
                         <form method="POST" action="newPost.php" enctype="multipart/form-data">
-                            <textarea placeholder="Whats on your mind?" name="content" class="form-control" rows="5"></textarea>
+                            <textarea placeholder="Whats on your mind?" name="content" class="form-control" rows="3"></textarea>
                             <div class="mt-3 d-flex justify-content-between">
                                 <input type="file" id="post_image" name="upload" hidden>
                                 <button type="button" class="btn btn-secondary" name="fileToUpload" onclick="document.getElementById('post_image').click();">Upload photo</button>
@@ -134,10 +134,10 @@
                         <!-- show posts -->
                         <div class="border container-fluid p-0 mt-3">
                             <div class="row mt-3">
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-4">
-                                    <div class=""><img class="img-size rounded-circle ms-3" src="<?php echo $user_image ?>" alt=""></div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-2">
+                                    <img class="img-size rounded-circle ms-3" src="<?php echo $user_image ?>" alt="">
                                 </div>
-                                <div class="col-xl-8 col-lg-7 col-md-7 col-6 d-flex flex-column justify-content-center">
+                                <div class="col-xl-9 col-lg-7 col-md-7 col-8 ps-1 d-flex flex-column justify-content-center">
                                     <div class="text-capitalize"><?php echo $posted_by ?></div>
                                     <span><?php echo $post_date ?></span>
                                 </div>
@@ -152,20 +152,17 @@
                                     ?>
                                 </div>
                             </div>
-                            <!-- <div class="row justify-content-center"> -->
-                            <div class="row my-4 ps-5"><?php echo $content ?></div>
+                            <div class="row my-4 px-4"><?php echo $content ?></div>
                             <div class=""><img class="img-fluid" src="<?php echo $post_image ?>" alt=""></div>
-                            <!-- </div> -->
+                            <!-- add a comment -->
                             <div id="comments" class="row mt-3">
-                                <!-- add a comment -->
                                 <div class="add_comment_form">
-                                    <div class="row border justify-content-center py-3 my-3 mx-1">
-                                        <div class="col-lg-10  col-md-8  pe-1">
-                                            <textarea data-postid="<?php echo $post_id ?>" class="form-control comment_content" name="comment" rows="2" placeholder="Enter a comment"></textarea>
-                                            <input type="text" name="post_id" class="post_id" value="<?php echo $post_id ?>" hidden>
+                                    <div class="row border align-items-center py-3 my-3 mx-1">
+                                        <div class="col-lg-10 col-md-8 col-9 pe-0">
+                                            <textarea data-postid="<?php echo $post_id ?>" class="form-control comment_content" name="comment" style="height: 16px;"  placeholder="Enter a comment"></textarea>
                                         </div>
-                                        <div class="col-lg-2 col-md-4 mt-2">
-                                            <button type="button" class="btn btn-secondary add_comment" value="<?php echo $post_id ?>">Comment</button>
+                                        <div class="col-lg-2 col-md-4 col-3 ps-0">
+                                            <button type="button" class="btn btn-secondary btn-sm add_comment ms-2" value="<?php echo $post_id ?>">Comment</button>
                                         </div>
                                     </div>
                                     <?php
@@ -180,16 +177,16 @@
                                     ?>
                                         <!-- show comments -->
                                         <div class="row mt-1 comment_to_remove">
-                                            <div class="col-xl-1 col-lg-2 col-md-2 col-2"><img class=" img-comment" src="<?php echo $user_image ?>" alt=""></div>
-                                            <div class="col-xl-11 col-lg-10 col-md-10 col-10 make-space">
-                                                <div class="bg-light me-2 p-1">
+                                            <div class="col-xl-1 col-lg-2 col-md-2 col-2"><img class="img-size rounded-circle ms-3 img-comment" src="<?php echo $user_image ?>" alt=""></div>
+                                            <div class="col-xl-11 col-lg-10 col-md-10 col-10 make-space ps-1">
+                                                <div class="bg-light rounded me-2 p-1">
                                                     <p class="mb-0 text-capitalize"><strong><?php echo $commented_by ?></strong></p>
                                                     <div id="new_comment" class="d-none" data-id="<?php echo "div" . $comment_id ?>">
-                                                        <textarea class="form-control" id="new_comment_content" rows="2" placeholder="Enter a comment" data-id="<?php echo "textarea" . $comment_id ?>"></textarea>
+                                                        <textarea class="form-control" id="new_comment_content" rows="1" placeholder="Enter a comment" data-id="<?php echo "textarea" . $comment_id ?>"></textarea>
                                                         <button class="link-button small done_comment_edit" value="<?php echo $comment_id ?>">Done</button>
                                                         <button class="link-button small" onclick="edit_cancel()">Cancel</button>
                                                     </div>
-                                                    <p id="old_comment" class="old_comment text-break p-1" data-id="<?php echo "p" . $comment_id ?>"><?php echo $comment_content ?></p>
+                                                    <p id="old_comment" class="old_comment text-break mb-0" data-id="<?php echo "p" . $comment_id ?>"><?php echo $comment_content ?></p>
                                                 </div>
                                                 <div class="d-flex me-2 justify-content-between">
                                                     <div>
