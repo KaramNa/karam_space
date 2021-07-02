@@ -107,11 +107,24 @@
                         </form>
                     </div>
                 </div>
+                <!-- show posts -->
                 <?php
                 $friends = $con->query("
                         SELECT * FROM friend_request WHERE request_from_id = '$user_id' OR request_to_id = '$user_id' 
                         AND request_status = 'confirm'");
                 $flag = 0;
+                function count_likes($post_id, $con){
+                    if ($post_id > 0) {
+                        $query = "SELECT post_id FROM likes
+                    WHERE post_id = '$post_id'";
+                        $result = $con->query($query);
+                        if ($result->num_rows > 0) {
+                            return $result->num_rows;
+                        } else {
+                            return 0;
+                        }
+                    }
+                }
                 do {
                     if ($flag == 0) {
                         $friend_id = $user_id;
@@ -130,12 +143,18 @@
                         $post_id = $row["post_id"];
                         $post_date = $row["post_date"];
                         $posted_by_id = $row["user_id"];
+                        $post_likes_num = count_likes($post_id, $con);
+                        $liked_by_me = $con->query("SELECT * FROM likes WHERE post_id = '$post_id' AND user_id = '$user_id'");
+                        if($liked_by_me->num_rows > 0){
+                            $liked_by_me_flag = true;
+                        }else{
+                            $liked_by_me_flag = false;
+                        }
                 ?>
-                        <!-- show posts -->
                         <div class="border container-fluid p-0 mt-3">
                             <div class="row mt-3">
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-2">
-                                    <img class="img-size rounded-circle ms-3" src="<?php echo $user_image ?>" alt="">
+                                    <img class="img-size rounded-circle" src="<?php echo $user_image ?>" alt="">
                                 </div>
                                 <div class="col-xl-9 col-lg-7 col-md-7 col-8 ps-1 d-flex flex-column justify-content-center">
                                     <div class="text-capitalize"><?php echo $posted_by ?></div>
@@ -152,17 +171,52 @@
                                     ?>
                                 </div>
                             </div>
-                            <div class="row my-4 px-4"><?php echo $content ?></div>
+                            <div class="row my-4 px-3"><?php echo $content ?></div>
                             <div class=""><img class="img-fluid" src="<?php echo $post_image ?>" alt=""></div>
+                            <div class="row ms-2 count_post_likes">
+                                <?php
+                                if($liked_by_me_flag && $post_likes_num == 1){
+                                    echo "You liked this";
+                                }else if ($liked_by_me_flag && $post_likes_num > 1){
+                                    echo "You, and " . ($post_likes_num -1) . " people liked this";
+                                }else if(!$liked_by_me_flag && $post_likes_num > 0){
+                                    echo $post_likes_num . " people liked this";
+                                }else if(!$liked_by_me_flag && $post_likes_num == 0){
+                                    echo "Be the first to like this";
+                                }
+                                ?>
+                            </div>
+                            <div class="row justify-content-center align-itmes-center">
+                                <?php
+                                $likes_query = $con->query("SELECT * FROM likes WHERE post_id = '$post_id' AND user_id = '$user_id'");
+                                if ($likes_query->num_rows > 0) { ?>
+                                    <div class="col-6 btn btn-outline-light bg-light">
+                                        <button type="button" class="like_post btn text-secondary form-control px-0" value="<?php echo $post_id ?>">
+                                            <p class="text-secondary m-0">Unike</p>
+                                        </button>
+                                    </div>
+                                <?php
+                                } else { ?>
+                                    <div class="col-6 btn btn-outline-light">
+                                        <button type="button" class="like_post btn text-secondary form-control px-0" value="<?php echo $post_id ?>"><span class="fa fa-thumbs-up" style="font-size:22px;"> Like</span></button>
+                                    </div>
+                                <?php
+
+                                }
+
+                                ?>
+
+                                <div class="col-6 btn btn-outline-light"></div>
+                            </div>
                             <!-- add a comment -->
-                            <div id="comments" class="row mt-3">
-                                <div class="add_comment_form">
-                                    <div class="row border align-items-center py-3 my-3 mx-1">
-                                        <div class="col-lg-10 col-md-8 col-9 pe-0">
-                                            <textarea data-postid="<?php echo $post_id ?>" class="form-control comment_content" name="comment" style="height: 16px;"  placeholder="Enter a comment"></textarea>
+                            <div id="comments" class="row">
+                                <div class="add_comment_form p-0">
+                                    <div class="row border justify-content-between align-items-center py-3 my-3">
+                                        <div class="col-lg-10 col-md-8 col-8">
+                                            <textarea data-postid="<?php echo $post_id ?>" class="form-control comment_content" name="comment" style="height: 16px;" placeholder="Enter a comment"></textarea>
                                         </div>
-                                        <div class="col-lg-2 col-md-4 col-3 ps-0">
-                                            <button type="button" class="btn btn-secondary btn-sm add_comment ms-2" value="<?php echo $post_id ?>">Comment</button>
+                                        <div class="col-lg-2 col-md-4 col-4 text-center">
+                                            <button type="button" class="btn btn-secondary btn-sm add_comment" value="<?php echo $post_id ?>">Comment</button>
                                         </div>
                                     </div>
                                     <?php
@@ -177,7 +231,7 @@
                                     ?>
                                         <!-- show comments -->
                                         <div class="row mt-1 comment_to_remove">
-                                            <div class="col-xl-1 col-lg-2 col-md-2 col-2"><img class="img-size rounded-circle ms-3 img-comment" src="<?php echo $user_image ?>" alt=""></div>
+                                            <div class="col-xl-1 col-lg-2 col-md-2 col-2"><img class="img-size rounded-circle img-comment" src="<?php echo $user_image ?>" alt=""></div>
                                             <div class="col-xl-11 col-lg-10 col-md-10 col-10 make-space ps-1">
                                                 <div class="bg-light rounded me-2 p-1">
                                                     <p class="mb-0 text-capitalize"><strong><?php echo $commented_by ?></strong></p>
@@ -261,12 +315,67 @@
                 }
 
             });
+
+            $(".like_post").click(function() {
+                var action = "like_post";
+                var btn = $(this);
+                var val = $(this).val();
+                $.ajax({
+                    url: "actions.php",
+                    method: "POST",
+                    data: {
+                        action: action,
+                        post_id: val
+                    },
+                    success: function(data) {
+                        if (data == "like") {
+                            btn.parent().addClass("bg-light");
+                            btn.html("Unlike");
+                            count_post_likes(val, data);
+
+
+                        } else {
+                            btn.parent().removeClass("bg-light");
+                            btn.html('<span class="fa fa-thumbs-up" style="font-size:22px;"> Like</span>');
+                            count_post_likes(val, data);
+
+                        }
+                    }
+                });
+
+            });
+
+            function count_post_likes(post_id, check) {
+                var action = "count_post_likes";
+
+                $.ajax({
+                    url: "actions.php",
+                    method: "POST",
+                    data: {
+                        action: action,
+                        post_id: post_id
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        if (check == "like" && data != 1) {
+                            $(".count_post_likes").html("You, and " + (data - 1) + " people liked this");
+                        } else if (check == "unlike" && data != "Be the first to like this") {
+                            $(".count_post_likes").html(data + " people liked this");
+                        } else if (check == "like" && data == 1) {
+                            $(".count_post_likes").html("You liked this");
+                        } else {
+                            $(".count_post_likes").html(data);
+                        }
+                    }
+                });
+            }
+
             $(".add_comment").click(function() {
                 var action = "add_comment";
                 var thisbtn = $(this).parents(".add_comment_form");
                 comment_content = $(this).parent().siblings().find(".comment_content");
                 $.ajax({
-                    url: "friend_request.php",
+                    url: "actions.php",
                     method: "POST",
                     data: {
                         action: action,
@@ -287,7 +396,7 @@
                 var new_comment_content = $(this).siblings("textarea");
                 var edited_paragraph = $(this).parent().parent().find(".old_comment");
                 $.ajax({
-                    url: "friend_request.php",
+                    url: "actions.php",
                     method: "POSt",
                     data: {
                         action: action,
@@ -306,7 +415,7 @@
                 var comment_id = $(this).val();
                 var remove_comment = $(this).parents(".comment_to_remove");
                 $.ajax({
-                    url: "friend_request.php",
+                    url: "actions.php",
                     method: "POSt",
                     data: {
                         action: action,
@@ -329,7 +438,7 @@
                 var action = 'count_un_seen_friend_request';
 
                 $.ajax({
-                    url: "friend_request.php",
+                    url: "actions.php",
                     method: "POST",
                     data: {
                         action: action
@@ -342,15 +451,19 @@
                     }
                 })
             }
+
+
             count_un_seen_friend_request();
+            // count_post_likes(-1);
             setInterval(function() {
                 count_un_seen_friend_request();
+                // count_post_likes();
             }, 5000);
 
             function load_friends_request_list() {
                 var action = "load_friend_request_list";
                 $.ajax({
-                    url: "friend_request.php",
+                    url: "actions.php",
                     method: "POST",
                     data: {
                         action: action
@@ -372,7 +485,7 @@
             function remove_friend_request_count() {
                 var action = "remove_friend_request_count";
                 $.ajax({
-                    url: "friend_request.php",
+                    url: "actions.php",
                     method: "POST",
                     data: {
                         action: action

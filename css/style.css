@@ -3,7 +3,9 @@
   background-size: cover;
   height: 100vh;
 }
-
+.row{
+  margin: 0;
+}
 .title-row {
   min-height: 95vh;
 }

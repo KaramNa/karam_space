@@ -19,7 +19,7 @@ if (isset($_POST["action"])) {
         $request_id = $_POST["request_id"];
         $con->query("UPDATE friend_request SET request_status = 'confirm' WHERE request_id = '$request_id'");
     }
-
+    // needs to review
     if ($action == "count_un_seen_friend_request") {
         $query = "SELECT COUNT(request_id) AS total FROM friend_request
         WHERE request_to_id = '$request_from_id'
@@ -124,7 +124,7 @@ if (isset($_POST["action"])) {
                 <div class="d-flex me-2 justify-content-between">
                     <div>
                         <span class="small"><button class="link-button ps-0" id="edit_comment" onclick="edit_comment(this.value)" value="' . $comment_id . '" data-id="edit_btn' . $comment_id . '">Edit</button></span>
-                        <span class="small"><button class="link-button small delete_comment" value="' .$comment_id . '" data-id="delete_btn' . $comment_id . '">Delete</button></span>
+                        <span class="small"><button class="link-button small delete_comment" value="' . $comment_id . '" data-id="delete_btn' . $comment_id . '">Delete</button></span>
                     </div>
                     <span class="small" data-id="date' . $comment_id . '">' . $time . '</span>
                 </div>
@@ -145,5 +145,32 @@ if (isset($_POST["action"])) {
     if ($action == "delete_comment") {
         $comment_id = $_POST["comment_id"];
         $con->query("DELETE FROM comments  WHERE comment_id = '$comment_id'");
+    }
+
+    if ($action == "like_post") {
+        $post_id = $_POST["post_id"];
+        $user_id = $request_from_id;
+        $query = $con->query("SELECT * FROM likes WHERE post_id = '$post_id' AND user_id = '$user_id'");
+        if ($query->num_rows > 0) {
+            $con->query("DELETE FROM likes WHERE user_id = '$user_id'");
+            echo "unlike";
+        } else {
+            $con->query("INSERT INTO likes VALUES('$post_id','$user_id')");
+            echo "like";
+        }
+    }
+
+    if ($action == "count_post_likes") {
+        $post_id = $_POST["post_id"];
+        if ($post_id > 0) {
+            $query = "SELECT post_id FROM likes
+        WHERE post_id = '$post_id'";
+            $result = $con->query($query);
+            if ($result->num_rows > 0) {
+                echo $result->num_rows;
+            } else {
+                echo "Be the first to like this";
+            }
+        }
     }
 }

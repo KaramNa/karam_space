@@ -217,7 +217,7 @@ $user = $query->fetch_assoc();
                 var request_to_id = <?php echo $request_to_id ?>;
                 var action = "add_friend";
                 $.ajax({
-                    url: "friend_request.php",
+                    url: "actions.php",
                     method: "POST",
                     data: {
                         request_to_id: request_to_id,
@@ -234,7 +234,7 @@ $user = $query->fetch_assoc();
                 var action = "cancel_request";
 
                 $.ajax({
-                    url: "friend_request.php",
+                    url: "actions.php",
                     method: "POST",
                     data: {
                         request_id: request_id,
@@ -249,7 +249,7 @@ $user = $query->fetch_assoc();
                 var request_id = <?php echo $friend_request_id ?>;
                 var action = "accept_friend";
                 $.ajax({
-                    url: "friend_request.php",
+                    url: "actions.php",
                     method: "POST",
                     data: {
                         request_id: request_id,
@@ -265,7 +265,7 @@ $user = $query->fetch_assoc();
             function load_friends(query = "") {
                 var action = "load_friend_list";
                 $.ajax({
-                    url: "friend_request.php",
+                    url: "actions.php",
                     method: "POST",
                     data: {
                         query: query,
