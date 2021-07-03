@@ -54,7 +54,6 @@ $location = $con->query("SELECT profile_picture FROM users WHERE user_id='$curre
             <?php
             show_post($current_user, $con, "friends_posts");
             ?>
-            <!-- End while loop -->
         </div>
     </div>
 </div>

@@ -6,6 +6,27 @@ include("functions.php");
 if (isset($_POST["action"])) {
     $action = $_POST["action"];
     $current_user = $_SESSION["user_id"];
+
+    if ($action == "search_people") {
+        $val = $_POST["query"];
+        $query = "SELECT * FROM users WHERE firstname LIKE '" . $val . "%' OR lastname LIKE '" . $val . "%'";
+        $result = $con->query($query);
+        $output = "";
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $output .= "
+                <div class='p-2 search-result' onclick='window.location.href = " . '"profile.php?id=' . $row["user_id"] . '"' . "'><img class='img-size rounded-circle' src='" . $row["profile_picture"]  . "' alt=''>  
+                <a id='profile_link' class='text-capitalize link text-light' href='profile.php?id=" . $row["user_id"] . "'>" . $row["firstname"] . " " . $row["lastname"] . "</a>
+                </div>
+                ";
+            }
+        } else {
+            $output .= "No resutl found";
+        }
+        $output .= "";
+        echo $output;
+    }
+
     if ($action == "add_friend") {
         $request_to_id = $_POST["request_to_id"];
         $con->query("INSERT INTO friend_request(request_from_id, request_to_id, request_status)
@@ -30,7 +51,7 @@ if (isset($_POST["action"])) {
     }
     function get_user_name($user_id, $con)
     {
-        $query = "SELECT firstname, lastname FROM users WHERE user_id = '$user_id'";
+        $query = "SELECT * FROM users WHERE user_id = '$user_id'";
         return $con->query($query);
     }
 
@@ -51,11 +72,18 @@ if (isset($_POST["action"])) {
 
                 $user_name = '';
 
-                foreach ($user_data as $user_row) {
+                $user_row = $user_data->fetch_assoc();
                     $user_name = $user_row["firstname"] . " " . $user_row["lastname"];
-                }
+                    $user_image = $user_row["profile_picture"];
+                    $user_id = $user_row["user_id"];
 
-                $output .= "<a class='dropdown-item nav-link' href='profile.php?id=" . $row["request_from_id"] . "'>" . $user_name . "</a>";
+                
+
+                $output .= "
+                <div class='p-2 search-result' onclick='window.location.href = " . '"profile.php?id=' . $user_id . '"' . "'><img class='img-size rounded-circle' src='" . $user_image  . "' alt=''>  
+                <a id='profile_link' class='text-capitalize link text-light' href='profile.php?id=" . $user_id . "'>" . $user_name . "</a>
+                </div>
+                ";
             }
         } else {
             $output = "<p class='ms-2 mb-0 text-light'>No friend request</p>";

@@ -34,7 +34,7 @@
                             <i class="fa fa-user-plus fa-2" aria-hidden="true"></i>
                             <span class="caret"></span>
                         </a>
-                        <div class="dropdown-menu bg-dark" id="friend_request_list" aria-labelledby="dropdownMenuLink">
+                        <div class="dropdown-menu bg-dark" id="friend_request_list" aria-labelledby="dropdownMenuLink" style="position: absolute;width: 190px;">
 
                         </div>
                     </li>
@@ -51,10 +51,10 @@
                         <a class="nav-link" href="logout.php">Log out</a>
                     </li>
                     <li class="nav-item d-flex align-items-center">
-                        <form method="POST">
+                        <div>
                             <input type="text" placeholder="Search" name="search" id="search">
-                            <div id="search_result" class="text-light bg-dark" style="position: absolute;width: 185px;z-index: 1001;"></div>
-                        </form>
+                            <div id="search_results" class="text-light bg-dark" style="position: absolute;width: 190px;z-index: 1;"></div>
+                        </div>
                     </li>
                 </ul>
             </div>

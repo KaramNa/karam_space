@@ -4,21 +4,28 @@
 <script>
     $(document).ready(function() {
         $("#search").keyup(function() {
+            var action = "search_people"
             var query = $(this).val();
             if (query != "") {
                 $.ajax({
-                    url: "search_action.php",
+                    url: "actions.php",
                     method: "POST",
                     data: {
-                        query: query
+                        query: query,
+                        action: action
                     },
                     success: function(data) {
-                        $("#search_result").html(data);
+                        $("#search_results").html(data);
                     }
                 });
             } else {
-                $("#search_result").html("");
+                $("#search_results").html("");
             }
+
+        });
+        $(".search_result").click(function(){
+            console.log("kfa");
+            $(this).find("a").trigger("click");
 
         });
 
