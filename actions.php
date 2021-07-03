@@ -1,14 +1,15 @@
 <?php
 include("session.php");
 include("database-config.php");
+include("functions.php");
 
 if (isset($_POST["action"])) {
     $action = $_POST["action"];
-    $request_from_id = $_SESSION["user_id"];
+    $current_user = $_SESSION["user_id"];
     if ($action == "add_friend") {
         $request_to_id = $_POST["request_to_id"];
         $con->query("INSERT INTO friend_request(request_from_id, request_to_id, request_status)
-             VALUES ('$request_from_id','$request_to_id','pending')");
+             VALUES ('$current_user','$request_to_id','pending')");
     }
 
     if ($action == "cancel_request") {
@@ -19,16 +20,13 @@ if (isset($_POST["action"])) {
         $request_id = $_POST["request_id"];
         $con->query("UPDATE friend_request SET request_status = 'confirm' WHERE request_id = '$request_id'");
     }
-    // needs to review
     if ($action == "count_un_seen_friend_request") {
         $query = "SELECT COUNT(request_id) AS total FROM friend_request
-        WHERE request_to_id = '$request_from_id'
+        WHERE request_to_id = '$current_user'
         AND request_status = 'pending'
         AND request_notify_status = 'no'";
-        $result = $con->query($query);
-        foreach ($result as $row) {
-            echo $row['total'];
-        }
+        $result = $con->query($query)->fetch_assoc();
+        echo $result['total'];
     }
     function get_user_name($user_id, $con)
     {
@@ -67,7 +65,7 @@ if (isset($_POST["action"])) {
 
     if ($action == "remove_friend_request_count") {
         $con->query("UPDATE friend_request SET request_notify_status = 'yes' 
-        WHERE request_to_id = '$request_from_id'
+        WHERE request_to_id = '$current_user'
         AND request_notify_status = 'no'");
     }
 
@@ -100,38 +98,14 @@ if (isset($_POST["action"])) {
     if ($action == "add_comment") {
         $output = "";
         $comment_content = $_POST["comment_content"];
-        $result = $con->query("SELECT profile_picture FROM users WHERE user_id = '$request_from_id'");
+        $result = $con->query("SELECT profile_picture FROM users WHERE user_id = '$current_user'");
         $user_image = $result->fetch_assoc()["profile_picture"];
-        $time = date("Y-m-d H:i:s");
+        $comment_date = date("Y-m-d H:i:s");
         $post_id = $_POST["post_id"];
-        $posted_by = $firstname . " " . $lastname;
-        if ($con->query("INSERT INTO comments(post_id,posted_by, comment_content) VALUES('$post_id', '$request_from_id', '$comment_content')")) {
+        $commented_by = $firstname . " " . $lastname;
+        if ($con->query("INSERT INTO comments(post_id,posted_by, comment_content) VALUES('$post_id', '$current_user', '$comment_content')")) {
             $comment_id = $con->insert_id;
-
-            $output .= '
-            <div class="row mt-1 comment_to_remove">
-            <div class="col-xl-1 col-lg-2 col-md-2 col-2"><img class="img-size rounded-circle ms-3 img-comment" src="' . $user_image . '" alt=""></div>
-            <div class="col-xl-11 col-lg-10 col-md-10 col-10 make-space ps-1">
-                <div class="bg-light rounded p-1">
-                    <p class="mb-0 text-capitalize"><strong>' . $posted_by . '</strong></p>
-                    <div id="new_comment" class="d-none" data-id="div' . $comment_id . '">
-                        <textarea class="form-control" id="new_comment_content" rows="1" placeholder="Enter a comment" data-id="textarea' . $comment_id . '"></textarea>
-                        <button class="link-button small done_comment_edit" value="' . $comment_id . '">Done</button>
-                        <button class="link-button small" onclick="edit_cancel()">Cancel</button>
-                    </div>
-                    <p id="old_comment" class="old_comment text-break mb-0" data-id="p' . $comment_id . '">' . $comment_content . '</p>
-                </div>
-                <div class="d-flex me-2 justify-content-between">
-                    <div>
-                        <span class="small"><button class="link-button ps-0" id="edit_comment" onclick="edit_comment(this.value)" value="' . $comment_id . '" data-id="edit_btn' . $comment_id . '">Edit</button></span>
-                        <span class="small"><button class="link-button small delete_comment" value="' . $comment_id . '" data-id="delete_btn' . $comment_id . '">Delete</button></span>
-                    </div>
-                    <span class="small" data-id="date' . $comment_id . '">' . $time . '</span>
-                </div>
-            </div>
-        </div>
-        ';
-            echo $output;
+            show_comment($user_image, $commented_by, $comment_date, $comment_id, $comment_content, $current_user, $current_user);
         }
     }
 
@@ -149,10 +123,10 @@ if (isset($_POST["action"])) {
 
     if ($action == "like_post") {
         $post_id = $_POST["post_id"];
-        $user_id = $request_from_id;
+        $user_id = $current_user;
         $query = $con->query("SELECT * FROM likes WHERE post_id = '$post_id' AND user_id = '$user_id'");
         if ($query->num_rows > 0) {
-            $con->query("DELETE FROM likes WHERE user_id = '$user_id'");
+            $con->query("DELETE FROM likes WHERE user_id = '$user_id' AND post_id = '$post_id'");
             echo "unlike";
         } else {
             $con->query("INSERT INTO likes VALUES('$post_id','$user_id')");
@@ -163,14 +137,10 @@ if (isset($_POST["action"])) {
     if ($action == "count_post_likes") {
         $post_id = $_POST["post_id"];
         if ($post_id > 0) {
-            $query = "SELECT post_id FROM likes
+            $query = "SELECT COUNT(post_id) AS total FROM likes
         WHERE post_id = '$post_id'";
-            $result = $con->query($query);
-            if ($result->num_rows > 0) {
-                echo $result->num_rows;
-            } else {
-                echo "Be the first to like this";
-            }
+            $result = $con->query($query)->fetch_assoc();
+            echo $result["total"];
         }
     }
 }
