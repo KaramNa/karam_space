@@ -51,9 +51,9 @@
                         <a class="nav-link" href="logout.php">Log out</a>
                     </li>
                     <li class="nav-item d-flex align-items-center">
-                        <div>
-                            <input type="text" placeholder="Search" name="search" id="search">
-                            <div id="search_results" class="text-light bg-dark" style="position: absolute;width: 190px;z-index: 1;"></div>
+                        <div class="dropdown">
+                            <input type="text" placeholder="Search" name="search" id="search" data-bs-toggle="dropdown" aria-expanded="false" id="search_results">
+                            <div class="dropdown-menu bg-dark" id="search_results" aria-labelledby="dropdownMenuLink" style="position: absolute;width: 190px;"></div>
                         </div>
                     </li>
                 </ul>

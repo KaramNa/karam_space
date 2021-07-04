@@ -21,7 +21,7 @@ if (isset($_POST["action"])) {
                 ";
             }
         } else {
-            $output .= "No resutl found";
+            $output .= "<p class='text-light m-0 ms-1'>No resutl found</p>";
         }
         $output .= "";
         echo $output;

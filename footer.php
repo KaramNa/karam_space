@@ -14,6 +14,10 @@
                         query: query,
                         action: action
                     },
+                    beforeSend: function() {
+                        $('#search_results').html('<li align="center"><i class="fa fa-circle-o-notch fa-spin"></i></li>');
+
+                    },
                     success: function(data) {
                         $("#search_results").html(data);
                     }
@@ -23,11 +27,7 @@
             }
 
         });
-        $(".search_result").click(function(){
-            console.log("kfa");
-            $(this).find("a").trigger("click");
-
-        });
+       
 
         $(".like_post").click(function() {
             var action = "like_post";
