@@ -8,6 +8,10 @@
   min-height: 95vh;
 }
 
+.row {
+  margin-right: 0;
+  margin-left: 0;
+}
 .signin-form {
   background-color: azure;
   padding: 35px;
@@ -64,5 +68,5 @@
 }
 
 .search-result:hover {
-  background-color:rgb(158, 158, 161);
+  background-color: rgb(158, 158, 161);
 }
