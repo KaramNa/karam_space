@@ -42,13 +42,13 @@
                 },
                 success: function(data) {
                     if (data == "like") {
-                        btn.parent().addClass("bg-light");
+                        btn.parent().addClass("bg-warning");
                         btn.html("Unlike");
                         count_post_likes(val, data, btn);
 
 
                     } else {
-                        btn.parent().removeClass("bg-light");
+                        btn.parent().removeClass("bg-warning");
                         btn.html('<span class="fa fa-thumbs-up" style="font-size:22px;"> Like</span>');
                         count_post_likes(val, data, btn);
 
@@ -83,6 +83,8 @@
         }
         $(".make_a_comment").click(function() {
             $(this).parents(".post").find(".add_comment_form").toggleClass("d-none");
+            $(this).parent().toggleClass("bg-warning");
+
         });
         $(".add_comment").click(function() {
             var action = "add_comment";

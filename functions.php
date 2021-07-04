@@ -83,7 +83,7 @@ function show_post($user_id, $con, $show_post_customize)
                     <?php
                     $likes_query = $con->query("SELECT * FROM likes WHERE post_id = '$post_id' AND user_id = '$user_id'");
                     if ($likes_query->num_rows > 0) { ?>
-                        <div class="col-6 btn btn-outline-light bg-light p-0">
+                        <div class="col-6 btn btn-outline-light bg-warning p-0">
                             <button type="button" class="like_post btn text-secondary form-control" value="<?php echo $post_id ?>">
                                 <p class="text-secondary m-0">Unlike</p>
                             </button>
@@ -143,7 +143,7 @@ function show_comment($user_image, $commented_by, $comment_date, $comment_id, $c
 {
     ?>
     <div class="row mt-1 comment_to_remove">
-        <div class="col-xl-1 col-lg-2 col-md-2 col-2"><img class="img-size rounded-circle img-comment" src="<?php echo $user_image ?>" alt=""></div>
+        <div class="col-xl-1 col-lg-2 col-md-2 col-2"><img class="img-size ms-0 rounded-circle img-comment" src="<?php echo $user_image ?>" alt=""></div>
         <div class="col-xl-11 col-lg-10 col-md-10 col-10 make-space ps-1">
             <div class="bg-light rounded me-2 p-1">
                 <p class="mb-0 text-capitalize"><strong><?php echo $commented_by ?></strong></p>
