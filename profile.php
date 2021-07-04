@@ -89,7 +89,7 @@ include("functions.php");
         </div>
         
         <div class="col-md-8 posts">
-            <?php show_post($request_to_id, $con, "my_posts"); ?>
+            <?php show_post($current_user, $con, "my_posts"); ?>
         </div>
     </div>
     <?php

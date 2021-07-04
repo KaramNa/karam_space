@@ -101,10 +101,10 @@ if (isset($_POST["action"])) {
         $condition = '';
         $user_id = $_POST["user_id"];
         if (!empty($_POST["query"])) {
-            $condition = "AND users.firstname LIKE '" . $_POST["query"] . "%'";
+            $condition = "AND (users.firstname LIKE '" . $_POST["query"] . "%' OR users.lastname LIKE '" . $_POST["query"] . "%' ) ";
         }
         $query = "
-                    SELECT users.user_id ,users.firstname, users.lastname, friend_request.request_from_id, friend_request.request_to_id
+                    SELECT *
                     FROM users INNER JOIN friend_request ON
                     friend_request.request_from_id = users.user_id OR
                     friend_request.request_to_id = users.user_id 
@@ -117,7 +117,9 @@ if (isset($_POST["action"])) {
         $output = "";
         if ($result->num_rows > 0) {
             foreach ($result as $row) {
-                $output .= "<li class='list-unstyled'><a class='text-capitalize link' href='profile.php?id=" . $row["user_id"] . "'>" . $row["firstname"] . " " . $row["lastname"] . "</a></li>";
+                $output .= "<div class='p-2 search-result' onclick='window.location.href = " . '"profile.php?id=' . $row["user_id"] . '"' . "'><img class='img-size rounded-circle' src='" . $row["profile_picture"]  . "' alt=''>  
+                <a id='profile_link' class='text-capitalize link text-dark' href='profile.php?id=" . $row["user_id"] . "'>" . $row["firstname"] . " " . $row["lastname"] . "</a>
+                </div>";
             }
         }
         echo $output;
