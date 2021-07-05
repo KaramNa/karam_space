@@ -1,5 +1,8 @@
 <?php
+$request_to_id = $_GET["id"];
 require("header.php");
+$query = $con->query("SELECT * FROM users WHERE user_id = '$request_to_id'");
+$user = $query->fetch_assoc();
 include("functions.php");
 
 ?>
@@ -87,9 +90,9 @@ include("functions.php");
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-8 posts">
-            <?php show_post($current_user, $con, "my_posts"); ?>
+            <?php show_post($request_to_id, $con, "my_posts"); ?>
         </div>
     </div>
     <?php

@@ -27,7 +27,22 @@
             }
 
         });
-       
+        $(".delete_post").click(function() {
+            var action = "delete_post";
+            var post_id = $(this).val();
+            var btn = $(this).parents(".post");
+            $.ajax({
+               url : "actions.php",
+               method : "POST",
+               data : {
+                   action : action,
+                   post_id : post_id
+               },success : function(data){
+                btn.html("");
+                btn.removeClass("border");
+               }
+            });
+        });
 
         $(".like_post").click(function() {
             var action = "like_post";
@@ -138,6 +153,9 @@
                 },
                 success: function(data) {
                     remove_comment.html("");
+                },
+                error: function() {
+
                 }
             });
         });

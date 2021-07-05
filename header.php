@@ -15,10 +15,8 @@
     <?php
     include("session.php");
     include("database-config.php");
-    $request_to_id = $_GET["id"];
     $current_user = $_SESSION["user_id"];
-    $query = $con->query("SELECT * FROM users WHERE user_id = '$request_to_id'");
-    $user = $query->fetch_assoc();
+    
     ?>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <div class="container">

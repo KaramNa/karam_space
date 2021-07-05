@@ -58,7 +58,8 @@ function show_post($user_id, $con, $show_post_customize)
                         <?php
                         if ($user_id == $posted_by_id) {
                         ?>
-                            <a href="delete_post.php<?php echo '?id=' . $post_id ?>" class="nav-link text-secondary">X</a>
+                            <button class="link-button small delete_post" value="<?php echo $post_id ?>">X</button>
+
                         <?php
                         }
                         ?>

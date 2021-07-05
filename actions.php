@@ -73,11 +73,11 @@ if (isset($_POST["action"])) {
                 $user_name = '';
 
                 $user_row = $user_data->fetch_assoc();
-                    $user_name = $user_row["firstname"] . " " . $user_row["lastname"];
-                    $user_image = $user_row["profile_picture"];
-                    $user_id = $user_row["user_id"];
+                $user_name = $user_row["firstname"] . " " . $user_row["lastname"];
+                $user_image = $user_row["profile_picture"];
+                $user_id = $user_row["user_id"];
 
-                
+
 
                 $output .= "
                 <div class='p-2 search-result' onclick='window.location.href = " . '"profile.php?id=' . $user_id . '"' . "'><img class='img-size rounded-circle' src='" . $user_image  . "' alt=''>  
@@ -125,6 +125,21 @@ if (isset($_POST["action"])) {
         echo $output;
     }
 
+    if ($action == "add_post") {
+    }
+    if ($action == "edit_post") {
+    }
+
+    if ($action == "delete_post") {
+        $post_id = $_POST["post_id"];
+        $query = $con->query("SELECT user_id FROM posts WHERE post_id = $post_id");
+        $user_id = $query->fetch_assoc()['user_id'];
+        if ($current_user == $user_id) {
+            $con->query("DELETE FROM posts WHERE post_id='$post_id'");
+        }
+        echo $user_id;
+    }
+
     if ($action == "add_comment") {
         $output = "";
         $comment_content = $_POST["comment_content"];
@@ -143,12 +158,22 @@ if (isset($_POST["action"])) {
         $comment_id = $_POST["comment_id"];
         $comment_content = $_POST["new_comment_content"];
         $time = date("Y-m-d H:i:s");
-        $con->query("UPDATE comments SET comment_content = '$comment_content', comment_date = '$time' WHERE comment_id='$comment_id'");
+        $query = $con->query("SELECT posted_by FROM comments WHERE comment_id = $comment_id");
+        $comented_by = $query->fetch_assoc()['posted_by'];
+        if ($current_user == $comented_by) {
+            $con->query("UPDATE comments SET comment_content = '$comment_content', comment_date = '$time' WHERE comment_id='$comment_id'");
+        }
         echo $comment_content;
     }
     if ($action == "delete_comment") {
         $comment_id = $_POST["comment_id"];
-        $con->query("DELETE FROM comments  WHERE comment_id = '$comment_id'");
+        $query = $con->query("SELECT posted_by FROM comments WHERE comment_id = $comment_id");
+        $comented_by = $query->fetch_assoc()['posted_by'];
+        if ($current_user == $comented_by) {
+            $con->query("DELETE FROM comments  WHERE comment_id = '$comment_id'");
+        }else{
+            die();
+        }
     }
 
     if ($action == "like_post") {
