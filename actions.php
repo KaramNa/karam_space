@@ -125,8 +125,8 @@ if (isset($_POST["action"])) {
         echo $output;
     }
 
-    if ($action == "add_post") {
-    }
+  
+
     if ($action == "edit_post") {
     }
 
@@ -171,7 +171,7 @@ if (isset($_POST["action"])) {
         $comented_by = $query->fetch_assoc()['posted_by'];
         if ($current_user == $comented_by) {
             $con->query("DELETE FROM comments  WHERE comment_id = '$comment_id'");
-        }else{
+        } else {
             die();
         }
     }

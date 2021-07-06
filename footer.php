@@ -3,6 +3,19 @@
 <script src="js/script.js"></script>
 <script>
     $(document).ready(function() {
+        imgInp.onchange = evt => {
+            const [file] = imgInp.files;
+            if (file) {
+                img_preview.src = URL.createObjectURL(file);
+                $("#img_preview").parent().removeClass("d-none");
+            }
+        }
+
+        $("#clear_imgInp").click(function() {
+            $("#imgInp").val("");
+            $("#img_preview").parent().addClass("d-none");
+        });
+
         $("#search").keyup(function() {
             var action = "search_people"
             var query = $(this).val();
@@ -32,15 +45,16 @@
             var post_id = $(this).val();
             var btn = $(this).parents(".post");
             $.ajax({
-               url : "actions.php",
-               method : "POST",
-               data : {
-                   action : action,
-                   post_id : post_id
-               },success : function(data){
-                btn.html("");
-                btn.removeClass("border");
-               }
+                url: "actions.php",
+                method: "POST",
+                data: {
+                    action: action,
+                    post_id: post_id
+                },
+                success: function(data) {
+                    btn.html("");
+                    btn.removeClass("border");
+                }
             });
         });
 

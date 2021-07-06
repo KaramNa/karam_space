@@ -44,13 +44,13 @@ function show_post($user_id, $con, $show_post_customize)
                 $liked_by_me_flag = false;
             }
 ?>
-            <div class="border container-fluid p-0 mt-3 post">
+            <div class="border container-fluid p-0 mt-3 post bg-white rounded">
                 <div class="row mt-3">
                     <div class="col-xl-1 col-lg-3 col-md-3 col-2">
                         <img class="img-size rounded-circle" src="<?php echo $user_image ?>" alt="">
                     </div>
                     <div class="col-xl-9 col-lg-7 col-md-7 col-8 ps-1 d-flex flex-column justify-content-center">
-                        <div class="text-capitalize"><?php echo $posted_by ?></div>
+                        <div class="text-capitalize fw-bold"><?php echo $posted_by ?></div>
                         <span><?php echo $post_date ?></span>
                     </div>
 
@@ -58,7 +58,19 @@ function show_post($user_id, $con, $show_post_customize)
                         <?php
                         if ($user_id == $posted_by_id) {
                         ?>
-                            <button class="link-button small delete_post" value="<?php echo $post_id ?>">X</button>
+                            <div class="dropdown nav-item">
+                                <a href="#" class="fa fa-angle-double-down text-secondary nav-link" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="friend_request_area">
+                                    <!-- <span class="caret"></span> -->
+                                </a>
+                                <div class="dropdown-menu bg-dark" id="friend_request_list" aria-labelledby="dropdownMenuLink" style="position: absolute;min-width: 55px;">
+                                    <div class="search-result">
+                                        <button type="button" class="link-button small text-light edit_post" value="<?php echo $post_id ?>" data-bs-toggle="modal" data-bs-target="#update_post">Edit</button>
+                                    </div>
+                                    <div class="search-result">
+                                        <button class="link-button small text-light delete_post" value="<?php echo $post_id ?>">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
 
                         <?php
                         }
