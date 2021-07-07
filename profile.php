@@ -13,6 +13,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $con->query("UPDATE users SET profile_picture = '$location' WHERE user_id = '$current_user'");
         }
     }
+}else{
+    $location = $user["profile_picture"];
 }
 
 ?>
@@ -21,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="row text-center">
         <div class="col-sm-4"></div>
         <div class="col-sm-4">
-            <img class="rounded-circle mt-5 user-image" src="<?php echo $user['profile_picture'] ?>" alt=""  data-bs-toggle="modal" data-bs-target="#staticBackdrop" width="200px" height="200px">
+            <img class="rounded-circle mt-5 user-image" src="<?php echo $location ?>" alt=""  data-bs-toggle="modal" data-bs-target="#staticBackdrop" width="200px" height="200px">
             <?php
             $friend_request_id = 0;
             if ($current_user != $request_to_id) {
@@ -116,10 +118,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <form action="" method="POST" enctype="multipart/form-data">
                     <div class="modal-body">
-                        <input type="file" id="user_image_input" name="upload_user_image" hidden>
                         <span>Please choose a photo </span>
                         <button type="button" class="btn btn-secondary" onclick="document.getElementById('user_image_input').click();">Choose</button>
                     </div>
+                    <div class="mt-3 position-relative d-none">
+                            <input type="file" id="user_image_input" name="upload_user_image" hidden>
+                            <a href="#" role="button" id="profile_clear_imgInp" class="unselect_img">X</a>
+                            <img src="" alt="" id="profile_img_preview" width="100px" height="100px" class="p-1">
+                        </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary">Update</button>

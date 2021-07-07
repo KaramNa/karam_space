@@ -1,19 +1,51 @@
+<!-- Update post modal -->
+<div class="modal fade" id="update_post" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="update_postLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="update_postLabel">Update your post</h5>
+                <button id="close_update_post_modal" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form class="m-2" method="" action="" enctype="multipart/form-data">
+                <textarea id="textarea_update_post" placeholder="Say What's in Your Heart?" name="content" class="form-control" rows="3"></textarea>
+                <div class="mt-3 position-relative d-none">
+                    <input type="file" id="update_post_imgInp" name="upload" hidden>
+                    <a href="#" role="button" id="update_post_clear_imgInp" class="unselect_img">X</a>
+                    <img src="" alt="" id="update_post_img_preview" width="100px" height="100px" class="p-1">
+                </div>
+                <div class="mt-3 d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary" name="fileToUpload" onclick="document.getElementById('update_post_imgInp').click();">Upload photo</button>
+                    <button id="save_edited_post" type="button" class="btn btn-secondary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <footer class="text-center text-light bg-dark fixed-bottom">&copy; 2021 Copyright: <strong>Karam Nassar</strong></footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 <script src="js/script.js"></script>
 <script>
     $(document).ready(function() {
-        imgInp.onchange = evt => {
-            const [file] = imgInp.files;
-            if (file) {
-                img_preview.src = URL.createObjectURL(file);
-                $("#img_preview").parent().removeClass("d-none");
-            }
-        }
+        $('input[type="file"]').on('change', function() {
+            function img_preview_func(input, img_previewer, clear_button) {
+                const [file] = input.files;
+                if (file) {
+                    img_previewer.src = URL.createObjectURL(file);
+                    $("#" + img_previewer.id).parent().removeClass("d-none");
+                }
+                $("#" + clear_button).click(function() {
+                    $("#" + input.id).val("");
+                    $("#" + img_previewer.id).parent().addClass("d-none");
+                });
 
-        $("#clear_imgInp").click(function() {
-            $("#imgInp").val("");
-            $("#img_preview").parent().addClass("d-none");
+            }
+            if ($(this).attr('id') == "imgInp") {
+                img_preview_func(imgInp, img_preview, "clear_imgInp");
+            } else if ($(this).attr('id') == "user_image_input") {
+                img_preview_func(user_image_input, profile_img_preview, "profile_clear_imgInp");
+            } else if ($(this).attr('id') == "update_post_imgInp") {
+                img_preview_func(update_post_imgInp, update_post_img_preview, "update_post_clear_imgInp");
+            }
         });
 
         $("#search").keyup(function() {
@@ -40,6 +72,47 @@
             }
 
         });
+
+        $(".edit_post").click(function() {
+            $("#save_edited_post").val($(this).val());
+            $("#textarea_update_post").html($("div[data-id = div" + $(this).val() + "]").html());
+            var file = $("img[data-id = postImg" + $(this).val() + "]")[0].src;
+            update_post_img_preview.src = file;
+            if (file != "http://localhost/network/home.php") {
+                $("#update_post_img_preview").parent().removeClass("d-none");
+                $("#update_post_clear_imgInp").click(function() {
+                    $("#update_post_img_preview").parent().addClass("d-none");
+                    update_post_img_preview.src = "http://localhost/network/home.php";
+
+                });
+            }
+
+        });
+
+
+        $("#close_update_post_modal").click(function() {
+            $("#update_post_img_preview").parent().addClass("d-none");
+
+        });
+
+        $("#save_edited_post").click(function() {
+            var action = "save_edited_post";
+            var post_id = $(this).val();
+
+            $.ajax({
+                url: "actions.php",
+                method: "POST",
+                data: {
+                    action: action,
+                    post_id: post_id
+                },
+                success: function(data) {
+                    console.log($("#textarea_update_post").html());
+                    // $("img[data-id = postImg" + $(this).val() + "]")[0].src = update_post_img_preview.src;
+                }
+            });
+        });
+
         $(".delete_post").click(function() {
             var action = "delete_post";
             var post_id = $(this).val();

@@ -60,14 +60,13 @@ function show_post($user_id, $con, $show_post_customize)
                         ?>
                             <div class="dropdown nav-item">
                                 <a href="#" class="fa fa-angle-double-down text-secondary nav-link" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="friend_request_area">
-                                    <!-- <span class="caret"></span> -->
                                 </a>
                                 <div class="dropdown-menu bg-dark" id="friend_request_list" aria-labelledby="dropdownMenuLink" style="position: absolute;min-width: 55px;">
                                     <div class="search-result">
-                                        <button type="button" class="link-button small text-light edit_post" value="<?php echo $post_id ?>" data-bs-toggle="modal" data-bs-target="#update_post">Edit</button>
+                                        <button id="edit_post" type="button" class="link-button form-control small text-light edit_post" value="<?php echo $post_id ?>" data-bs-toggle="modal" data-bs-target="#update_post">Edit</button>
                                     </div>
-                                    <div class="search-result">
-                                        <button class="link-button small text-light delete_post" value="<?php echo $post_id ?>">Delete</button>
+                                    <div class="search-result ">
+                                        <button id="delete_post" class="link-button small text-light delete_post form-control" value="<?php echo $post_id ?>">Delete</button>
                                     </div>
                                 </div>
                             </div>
@@ -77,8 +76,8 @@ function show_post($user_id, $con, $show_post_customize)
                         ?>
                     </div>
                 </div>
-                <div class="row my-4 px-3"><?php echo $content ?></div>
-                <div class=""><img class="img-fluid" src="<?php echo $post_image ?>" alt=""></div>
+                <div class="row my-4 px-3 post_content" name="post_content" data-id="<?php echo 'div' .  $post_id ?>"><?php echo $content ?></div>
+                <div class=""><img class="img-fluid post_img" src="<?php echo $post_image ?>" alt="" data-id="<?php echo 'postImg' .  $post_id ?>"></div>
                 <div class="row ms-2 count_post_likes">
                     <?php
                     if ($liked_by_me_flag && $post_likes_num == 1) {
@@ -180,6 +179,95 @@ function show_comment($user_image, $commented_by, $comment_date, $comment_id, $c
             </div>
         </div>
     </div>
+<?php
+}
+
+function add_post($con, $user_id, $user_image, $posted_by, $post_date, $post_id, $content, $post_image, $add_update)
+{
+?>
+    <div class="border container-fluid p-0 mt-3 post bg-white rounded">
+        <div class="row mt-3">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-2">
+                <img class="img-size rounded-circle" src="<?php echo $user_image ?>" alt="">
+            </div>
+            <div class="col-xl-9 col-lg-7 col-md-7 col-8 ps-1 d-flex flex-column justify-content-center">
+                <div class="text-capitalize fw-bold"><?php echo $posted_by ?></div>
+                <span><?php echo $post_date ?></span>
+            </div>
+            <div class="col-2 d-flex justify-content-end">
+                <div class="dropdown nav-item">
+                    <a href="#" class="fa fa-angle-double-down text-secondary nav-link" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="friend_request_area">
+                    </a>
+                    <div class="dropdown-menu bg-dark" id="friend_request_list" aria-labelledby="dropdownMenuLink" style="position: absolute;min-width: 55px;">
+                        <div class="search-result">
+                            <button id="edit_post" type="button" class="link-button form-control small text-light edit_post" value="<?php echo $post_id ?>" data-bs-toggle="modal" data-bs-target="#update_post">Edit</button>
+                        </div>
+                        <div class="search-result ">
+                            <button id="delete_post" class="link-button small text-light delete_post form-control" value="<?php echo $post_id ?>">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row my-4 px-3 post_content" name="post_content" data-id="<?php echo 'div' .  $post_id ?>"><?php echo $content ?></div>
+        <div class=""><img class="img-fluid post_img" src="<?php echo $post_image ?>" alt="" data-id="<?php echo 'postImg' .  $post_id ?>"></div>
+        <div class="row ms-2 count_post_likes">
+          
+        </div>
+        <div class="row justify-content-center align-itmes-center">
+            <?php
+            $likes_query = $con->query("SELECT * FROM likes WHERE post_id = '$post_id' AND user_id = '$user_id'");
+            if ($likes_query->num_rows > 0) { ?>
+                <div class="col-6 btn btn-outline-light bg-warning p-0">
+                    <button type="button" class="like_post btn text-secondary form-control" value="<?php echo $post_id ?>">
+                        <p class="text-secondary m-0">Unlike</p>
+                    </button>
+                </div>
+            <?php
+            } else { ?>
+                <div class="col-6 btn btn-outline-light p-0">
+                    <button type="button" class="like_post btn text-secondary form-control" value="<?php echo $post_id ?>"><span class="fa fa-thumbs-up" style="font-size:22px;"> Like</span></button>
+                </div>
+            <?php
+
+            }
+
+            ?>
+
+            <div class="col-6 btn btn-outline-light p-0">
+                <button type="button" class="make_a_comment btn text-secondary form-control" value="<?php echo "c" . $post_id ?>">
+                    <p class="text-secondary m-0">Comment</p>
+                </button>
+            </div>
+        </div>
+        <!-- add a comment -->
+        <div id="comments" class="row">
+            <div class="comment_section p-0">
+                <div class="row border justify-content-between align-items-center py-3 my-3 add_comment_form d-none">
+                    <div class="col-lg-10 col-md-8 col-8">
+                        <textarea data-postid="<?php echo $post_id ?>" class="form-control comment_content" name="comment" style="height: 16px;" placeholder="Enter a comment"></textarea>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-4 text-center">
+                        <button type="button" class="btn btn-secondary btn-sm add_comment" value="<?php echo $post_id ?>">Comment</button>
+                    </div>
+                </div>
+                <?php
+                $comment = $con->query("SELECT * FROM comments LEFT JOIN users ON comments.posted_by = users.user_id WHERE post_id = '$post_id' ORDER BY comments.comment_id");
+                while ($row = $comment->fetch_assoc()) {
+                    $comment_id = $row["comment_id"];
+                    $comment_content = $row["comment_content"];
+                    $comment_date = $row["comment_date"];
+                    $user_image = $row["profile_picture"];
+                    $commented_by = $row["firstname"] . " " . $row["lastname"];
+                    $commented_by_id = $row["posted_by"];
+
+                    show_comment($user_image, $commented_by, $comment_date, $comment_id, $comment_content, $user_id, $commented_by_id);
+                } ?>
+
+            </div>
+        </div>
+    </div>
+
 <?php
 }
 ?>

@@ -127,7 +127,8 @@ if (isset($_POST["action"])) {
 
   
 
-    if ($action == "edit_post") {
+    if ($action == "save_edited_post") {
+        echo "success";
     }
 
     if ($action == "delete_post") {

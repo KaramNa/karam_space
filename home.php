@@ -3,26 +3,14 @@ require("header.php");
 include("functions.php");
 $request_to_id = 0;
 $friend_request_id = 0;
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_FILES["upload_user_image"])) {
-        $target_dir = "images/profile_pictures/";
-        $target_file = $target_dir . basename($_FILES["upload_user_image"]["name"]);
-        if (move_uploaded_file($_FILES["upload_user_image"]["tmp_name"], $target_file)) {
-            $location = "images/profile_pictures/" . $_FILES["upload_user_image"]["name"];
-            $con->query("UPDATE users SET profile_picture = '$location' WHERE user_id = '$current_user'");
-        }
-    }
-}
-?>
-<!-- user info -->
-<?php
 $location = $con->query("SELECT profile_picture FROM users WHERE user_id='$current_user'")->fetch_assoc()["profile_picture"];
 ?>
+<!-- user info -->
 <div class="container mt-5">
     <div class="row">
         <div class="col-sm-4">
             <div class="col-12 mt-3 text-center">
-                <img class="rounded-circle user-image" src="<?php echo $location ?>" alt="" data-bs-toggle="modal" data-bs-target="#staticBackdrop" width="190px" height="190px">
+                <img class="rounded-circle" src="<?php echo $location ?>" alt="" width="190px" height="190px">
             </div>
             <div class="col-12">
                 <ul class="navbar-nav border mt-3 p-4">
@@ -63,47 +51,6 @@ $location = $con->query("SELECT profile_picture FROM users WHERE user_id='$curre
 </div>
 
 
-<!-- User Photo Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Update your profile picture</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="" method="POST" enctype="multipart/form-data">
-                <div class="modal-body">
-                    <input type="file" id="user_image_input" name="upload_user_image" hidden>
-                    <span>Please choose a photo </span>
-                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('user_image_input').click();">Choose</button>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Update</button>
-            </form>
-        </div>
-    </div>
-</div>
-<!-- Update post modal -->
-<!-- <div class="modal fade" id="update_post" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="update_postLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="update_postLabel">Update your post</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="" method="POST" enctype="multipart/form-data">
-                <div class="modal-body">
-                    <span>Please choose a photo </span>
-                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('user_image_input').click();">Choose</button>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Update</button>
-            </form>
-        </div>
-    </div>
-</div> -->
 
 <?php require("footer.php");
 ?>
