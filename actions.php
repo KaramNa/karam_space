@@ -125,10 +125,25 @@ if (isset($_POST["action"])) {
         echo $output;
     }
 
-  
+    if ($action == "share_post") {
+        insert_post($con, $current_user, $_POST["content"]);
+    }
 
     if ($action == "save_edited_post") {
-        echo "success";
+        $post_id = $_POST["post_id"];
+        $post_content = $_POST["content"];
+        $post_img = $_POST["post_img"];
+        if ($post_img == "" && $_FILES['upload']['size'] == 0) {
+            $query = $con->query("UPDATE posts SET post_content = '$post_content', post_image = '$post_img' WHERE post_id = '$post_id'");
+        } else if ($post_img != "" && $_FILES['upload']['size'] == 0) {
+            $query = $con->query("UPDATE posts SET post_content = '$post_content' WHERE post_id = '$post_id'");
+        } else if ($_FILES['upload']['size'] != 0) {
+            check_image();
+            $post_img = "images/uploads/" . $_FILES["upload"]["name"];
+            $query = $con->query("UPDATE posts SET post_content = '$post_content', post_image = '$post_img' WHERE post_id = '$post_id'");
+        }
+        $output = array($post_content, $post_img);
+        echo json_encode($output);
     }
 
     if ($action == "delete_post") {

@@ -28,7 +28,7 @@ $location = $con->query("SELECT profile_picture FROM users WHERE user_id='$curre
                 <!-- update status -->
                 <div>
                     <h1>Update Status</h1>
-                    <form method="POST" action="newPost.php" enctype="multipart/form-data">
+                    <form id="update_status_form" method="" action="" enctype="multipart/form-data">
                         <textarea placeholder="Say What's in Your Heart?" name="content" class="form-control" rows="3"></textarea>
                         <div class="mt-3 position-relative d-none">
                             <input type="file" id="imgInp" name="upload" hidden>

@@ -77,7 +77,7 @@ function show_post($user_id, $con, $show_post_customize)
                     </div>
                 </div>
                 <div class="row my-4 px-3 post_content" name="post_content" data-id="<?php echo 'div' .  $post_id ?>"><?php echo $content ?></div>
-                <div class=""><img class="img-fluid post_img" src="<?php echo $post_image ?>" alt="" data-id="<?php echo 'postImg' .  $post_id ?>"></div>
+                <div class=""><img id="<?php echo 'postImg' .  $post_id ?>" class="img-fluid post_img" src="<?php echo $post_image ?>" alt="" data-id="<?php echo 'postImg' .  $post_id ?>"></div>
                 <div class="row ms-2 count_post_likes">
                     <?php
                     if ($liked_by_me_flag && $post_likes_num == 1) {
@@ -212,7 +212,7 @@ function add_post($con, $user_id, $user_image, $posted_by, $post_date, $post_id,
         <div class="row my-4 px-3 post_content" name="post_content" data-id="<?php echo 'div' .  $post_id ?>"><?php echo $content ?></div>
         <div class=""><img class="img-fluid post_img" src="<?php echo $post_image ?>" alt="" data-id="<?php echo 'postImg' .  $post_id ?>"></div>
         <div class="row ms-2 count_post_likes">
-          
+
         </div>
         <div class="row justify-content-center align-itmes-center">
             <?php
@@ -270,4 +270,52 @@ function add_post($con, $user_id, $user_image, $posted_by, $post_date, $post_id,
 
 <?php
 }
+
+
+function insert_post($con, $user_id, $post_content)
+{
+    if ($_FILES['upload']['size'] == 0 && $_FILES['upload']['error'] == 0) {
+        $location = "";
+    } else {
+        if (check_image()) {
+            $location = "images/uploads/" . $_FILES["upload"]["name"];
+        }
+    }
+
+    $con->query("INSERT INTO posts(user_id,post_image,post_content) VALUES('$user_id','$location','$post_content')");
+}
+
+
+function check_image()
+{
+    $uploadOk = true;
+    $target_dir = "images/uploads/";
+    $target_file = $target_dir . basename($_FILES["upload"]["name"]);
+    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+    // Check if image file is an actual image or fake image
+    if (isset($_POST["submit"])) {
+        $check = getimagesize($_FILES["upload"]["tmp_name"]);
+        if ($check == false) {
+            $uploadOk = false;
+        }
+    }
+
+    // Check file size
+    if ($_FILES["upload"]["size"] > 50000000) {
+        $uploadOk = false;
+    }
+
+    // Allow certain file formats
+    if (
+        $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+        && $imageFileType != "gif"
+    ) {
+        $uploadOk = false;
+    }
+    if (move_uploaded_file($_FILES["upload"]["tmp_name"], $target_file)) {
+        return $uploadOk;
+    }
+}
+
 ?>

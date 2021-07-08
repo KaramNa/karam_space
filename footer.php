@@ -6,7 +6,7 @@
                 <h5 class="modal-title" id="update_postLabel">Update your post</h5>
                 <button id="close_update_post_modal" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form class="m-2" method="" action="" enctype="multipart/form-data">
+            <form id="edit_status_form" class="m-2" method="POST" action="actions.php" enctype="multipart/form-data" name="edit_status_form">
                 <textarea id="textarea_update_post" placeholder="Say What's in Your Heart?" name="content" class="form-control" rows="3"></textarea>
                 <div class="mt-3 position-relative d-none">
                     <input type="file" id="update_post_imgInp" name="upload" hidden>
@@ -15,7 +15,7 @@
                 </div>
                 <div class="mt-3 d-flex justify-content-between">
                     <button type="button" class="btn btn-secondary" name="fileToUpload" onclick="document.getElementById('update_post_imgInp').click();">Upload photo</button>
-                    <button id="save_edited_post" type="button" class="btn btn-secondary">Save</button>
+                    <button id="save_edited_post" type="submit" class="btn btn-secondary">Save</button>
                 </div>
             </form>
         </div>
@@ -34,7 +34,8 @@
                     $("#" + img_previewer.id).parent().removeClass("d-none");
                 }
                 $("#" + clear_button).click(function() {
-                    $("#" + input.id).val("");
+                    // $("#" + input.id).val("");
+                    // img_previewer.src = "";
                     $("#" + img_previewer.id).parent().addClass("d-none");
                 });
 
@@ -72,17 +73,34 @@
             }
 
         });
+        $("#update_status_form").on("submit", function(e) {
+            e.preventDefault();
+            var formdata = new FormData(this);
+            formdata.append("action" , "share_post");
+            $.ajax({
+                url: "actions.php",
+                method: "POST",
+                contentType: false,
+                cache: false,
+                processData: false,
+                data: formdata,
+                success: function(data) {
+
+                }
+            });
+        });
+
 
         $(".edit_post").click(function() {
             $("#save_edited_post").val($(this).val());
-            $("#textarea_update_post").html($("div[data-id = div" + $(this).val() + "]").html());
-            var file = $("img[data-id = postImg" + $(this).val() + "]")[0].src;
+            $("#textarea_update_post").val($("div[data-id = div" + $(this).val() + "]").html());
+            var file = $("img[data-id = postImg" + $(this).val() + "]").attr("src");
             update_post_img_preview.src = file;
-            if (file != "http://localhost/network/home.php") {
+            if (file != "") {
                 $("#update_post_img_preview").parent().removeClass("d-none");
                 $("#update_post_clear_imgInp").click(function() {
                     $("#update_post_img_preview").parent().addClass("d-none");
-                    update_post_img_preview.src = "http://localhost/network/home.php";
+                    update_post_img_preview.src = "";
 
                 });
             }
@@ -95,20 +113,26 @@
 
         });
 
-        $("#save_edited_post").click(function() {
-            var action = "save_edited_post";
-            var post_id = $(this).val();
-
+        $("#edit_status_form").on("submit", function(e) {
+            e.preventDefault();
+            var formdata = new FormData(this);
+            var post_id = $("#save_edited_post").val();
+            formdata.append("action" , "save_edited_post");
+            formdata.append("post_id" , post_id);
+            formdata.append("post_img" , $("#update_post_img_preview").attr("src"));
             $.ajax({
                 url: "actions.php",
                 method: "POST",
-                data: {
-                    action: action,
-                    post_id: post_id
-                },
+                contentType: false,
+                cache: false,
+                processData: false,
+                data: formdata,
                 success: function(data) {
-                    console.log($("#textarea_update_post").html());
-                    // $("img[data-id = postImg" + $(this).val() + "]")[0].src = update_post_img_preview.src;
+                    var result = jQuery.parseJSON(data);
+                    $("div[data-id = div" + post_id + "]").html(result[0]);
+                    $("img[data-id = postImg" + post_id + "]")[0].src = result[1];
+                    $("#close_update_post_modal").click();
+                    console.log(result);
                 }
             });
         });
