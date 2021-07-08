@@ -95,7 +95,7 @@
         });
 
 
-        $(".edit_post").on("click", function() {
+        $(".posts").on("click", ".edit_post", function() {
             $("#save_edited_post").val($(this).val());
             $("#textarea_update_post").val($("div[data-id = div" + $(this).val() + "]").html());
             var file = $("img[data-id = postImg" + $(this).val() + "]").attr("src");
@@ -117,7 +117,7 @@
 
         });
 
-        $(".posts").on("submit", "#edit_status_form", function(e) {
+        $("#update_post").on("submit", "#edit_status_form", function(e) {
             e.preventDefault();
             var formdata = new FormData(this);
             var post_id = $("#save_edited_post").val();
