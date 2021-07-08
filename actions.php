@@ -6,7 +6,7 @@ include("functions.php");
 if (isset($_POST["action"])) {
     $action = $_POST["action"];
     $current_user = $_SESSION["user_id"];
-
+    // Search actions
     if ($action == "search_people") {
         $val = $_POST["query"];
         $query = "SELECT * FROM users WHERE firstname LIKE '" . $val . "%' OR lastname LIKE '" . $val . "%'";
@@ -26,7 +26,7 @@ if (isset($_POST["action"])) {
         $output .= "";
         echo $output;
     }
-
+    // Friendship actions
     if ($action == "add_friend") {
         $request_to_id = $_POST["request_to_id"];
         $con->query("INSERT INTO friend_request(request_from_id, request_to_id, request_status)
@@ -124,12 +124,17 @@ if (isset($_POST["action"])) {
         }
         echo $output;
     }
-
-    if ($action == "share_post") {
+    // Post actions
+    if ($action == "add_post") {
         insert_post($con, $current_user, $_POST["content"]);
+        $post_id = $con->insert_id;
+        $posted_by = $firstname . " " . $lastname;
+        $post_date = date("Y-m-d H:i:s");
+        $post_image = "images/uploads/" . $_FILES["upload"]["name"];
+        show_one_post($con, $current_user_pic, $posted_by, $post_date, $current_user, $current_user, $post_id, $_POST["content"], $post_image, "add", false, 0);
     }
 
-    if ($action == "save_edited_post") {
+    if ($action == "edit_post") {
         $post_id = $_POST["post_id"];
         $post_content = $_POST["content"];
         $post_img = $_POST["post_img"];
@@ -155,7 +160,7 @@ if (isset($_POST["action"])) {
         }
         echo $user_id;
     }
-
+    // Comment actions
     if ($action == "add_comment") {
         $output = "";
         $comment_content = $_POST["comment_content"];
@@ -191,7 +196,7 @@ if (isset($_POST["action"])) {
             die();
         }
     }
-
+    // Like actions
     if ($action == "like_post") {
         $post_id = $_POST["post_id"];
         $user_id = $current_user;

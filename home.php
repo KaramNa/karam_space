@@ -29,10 +29,10 @@ $location = $con->query("SELECT profile_picture FROM users WHERE user_id='$curre
                 <div>
                     <h1>Update Status</h1>
                     <form id="update_status_form" method="" action="" enctype="multipart/form-data">
-                        <textarea placeholder="Say What's in Your Heart?" name="content" class="form-control" rows="3"></textarea>
+                        <textarea id="post_content" placeholder="Say What's in Your Heart?" name="content" class="form-control" rows="3"></textarea>
                         <div class="mt-3 position-relative d-none">
                             <input type="file" id="imgInp" name="upload" hidden>
-                            <a href="#" role="button" id="clear_imgInp" class="unselect_img">X</a>
+                            <a role="button" id="clear_imgInp" class="unselect_img">X</a>
                             <img src="" alt="" id="img_preview" width="100px" height="100px" class="p-1">
                         </div>
                         <div class="mt-3 d-flex justify-content-between">
@@ -44,7 +44,7 @@ $location = $con->query("SELECT profile_picture FROM users WHERE user_id='$curre
             </div>
             <!-- show posts -->
             <?php
-            show_post($current_user, $con, "friends_posts");
+            show_posts($current_user, $con, "friends_posts");
             ?>
         </div>
     </div>

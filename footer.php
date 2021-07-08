@@ -10,7 +10,7 @@
                 <textarea id="textarea_update_post" placeholder="Say What's in Your Heart?" name="content" class="form-control" rows="3"></textarea>
                 <div class="mt-3 position-relative d-none">
                     <input type="file" id="update_post_imgInp" name="upload" hidden>
-                    <a href="#" role="button" id="update_post_clear_imgInp" class="unselect_img">X</a>
+                    <a role="button" id="update_post_clear_imgInp" class="unselect_img">X</a>
                     <img src="" alt="" id="update_post_img_preview" width="100px" height="100px" class="p-1">
                 </div>
                 <div class="mt-3 d-flex justify-content-between">
@@ -26,6 +26,7 @@
 <script src="js/script.js"></script>
 <script>
     $(document).ready(function() {
+        // Preview image 
         $('input[type="file"]').on('change', function() {
             function img_preview_func(input, img_previewer, clear_button) {
                 const [file] = input.files;
@@ -34,8 +35,8 @@
                     $("#" + img_previewer.id).parent().removeClass("d-none");
                 }
                 $("#" + clear_button).click(function() {
-                    // $("#" + input.id).val("");
-                    // img_previewer.src = "";
+                    $("#" + input.id).val("");
+                    img_previewer.src = "";
                     $("#" + img_previewer.id).parent().addClass("d-none");
                 });
 
@@ -48,7 +49,7 @@
                 img_preview_func(update_post_imgInp, update_post_img_preview, "update_post_clear_imgInp");
             }
         });
-
+        // search events
         $("#search").keyup(function() {
             var action = "search_people"
             var query = $(this).val();
@@ -73,10 +74,11 @@
             }
 
         });
-        $("#update_status_form").on("submit", function(e) {
+        // Post events
+        $(".posts").on("submit", "#update_status_form", function(e) {
             e.preventDefault();
             var formdata = new FormData(this);
-            formdata.append("action" , "share_post");
+            formdata.append("action", "add_post");
             $.ajax({
                 url: "actions.php",
                 method: "POST",
@@ -85,13 +87,15 @@
                 processData: false,
                 data: formdata,
                 success: function(data) {
-
+                    $(".posts  div:eq(0)").after(data);
+                    $("#post_content").val("");
+                    $("#clear_imgInp").click();
                 }
             });
         });
 
 
-        $(".edit_post").click(function() {
+        $(".edit_post").on("click", function() {
             $("#save_edited_post").val($(this).val());
             $("#textarea_update_post").val($("div[data-id = div" + $(this).val() + "]").html());
             var file = $("img[data-id = postImg" + $(this).val() + "]").attr("src");
@@ -108,18 +112,18 @@
         });
 
 
-        $("#close_update_post_modal").click(function() {
+        $("#close_update_post_modal").on("click", function() {
             $("#update_post_img_preview").parent().addClass("d-none");
 
         });
 
-        $("#edit_status_form").on("submit", function(e) {
+        $(".posts").on("submit", "#edit_status_form", function(e) {
             e.preventDefault();
             var formdata = new FormData(this);
             var post_id = $("#save_edited_post").val();
-            formdata.append("action" , "save_edited_post");
-            formdata.append("post_id" , post_id);
-            formdata.append("post_img" , $("#update_post_img_preview").attr("src"));
+            formdata.append("action", "edit_post");
+            formdata.append("post_id", post_id);
+            formdata.append("post_img", $("#update_post_img_preview").attr("src"));
             $.ajax({
                 url: "actions.php",
                 method: "POST",
@@ -132,12 +136,11 @@
                     $("div[data-id = div" + post_id + "]").html(result[0]);
                     $("img[data-id = postImg" + post_id + "]")[0].src = result[1];
                     $("#close_update_post_modal").click();
-                    console.log(result);
                 }
             });
         });
 
-        $(".delete_post").click(function() {
+        $(".posts").on('click', ".delete_post", function() {
             var action = "delete_post";
             var post_id = $(this).val();
             var btn = $(this).parents(".post");
@@ -154,8 +157,8 @@
                 }
             });
         });
-
-        $(".like_post").click(function() {
+        // like events
+        $(".like_post").on('click', function() {
             var action = "like_post";
             var btn = $(this);
             var val = $(this).val();
@@ -207,12 +210,13 @@
                 }
             });
         }
-        $(".make_a_comment").click(function() {
+        // comment events
+        $(".make_a_comment").on("click", function() {
             $(this).parents(".post").find(".add_comment_form").toggleClass("d-none");
             $(this).parent().toggleClass("bg-warning");
 
         });
-        $(".add_comment").click(function() {
+        $(".comment_section").on("click", ".add_comment", function() {
             var action = "add_comment";
             var thisbtn = $(this).parents(".comment_section");
             comment_content = $(this).parent().siblings().find(".comment_content");
@@ -226,13 +230,14 @@
 
                 },
                 success: function(data) {
-                    thisbtn.append(data);
-                    comment_content.val("");
+                    thisbtn.append(data).promise().done(function() {
+                        comment_content.val("");
+                    });
                 }
             });
 
         });
-        $(".done_comment_edit").click(function() {
+        $(".comment_section").on("click", ".done_comment_edit", function() {
             var action = "edit_comment";
             var comment_id = $(this).val();
             var new_comment_content = $(this).siblings("textarea");
@@ -251,7 +256,8 @@
                 }
             });
         });
-        $(".delete_comment").click(function() {
+        $(".comment_section").on("click", ".delete_comment", function() {
+            console.log("error");
             var action = "delete_comment";
             var comment_id = $(this).val();
             var remove_comment = $(this).parents(".comment_to_remove");
@@ -265,11 +271,9 @@
                 success: function(data) {
                     remove_comment.html("");
                 },
-                error: function() {
-
-                }
             });
         });
+        // Friendship events
         var friend_request_seen = false;
         $("#friend_request_area").click(function() {
             if (!friend_request_seen) {
@@ -337,7 +341,7 @@
                 }
             });
         }
-        // profile actions
+
         $("#add_friend").click(function() {
             var request_to_id = <?php echo $request_to_id ?>;
             var action = "add_friend";

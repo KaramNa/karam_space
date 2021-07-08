@@ -14,3 +14,4 @@ $lastname = $row["lastname"];
 $email = $row["email"];
 $gender = $row["gender"];
 $birthday = $row["birthday"];
+$current_user_pic = $row["profile_picture"];
