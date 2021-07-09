@@ -108,7 +108,6 @@
 
                 });
             }
-
         });
 
 
@@ -158,7 +157,7 @@
             });
         });
         // like events
-        $(".like_post").on('click', function() {
+        $(".posts").on('click', ".like_post", function() {
             var action = "like_post";
             var btn = $(this);
             var val = $(this).val();
@@ -171,13 +170,15 @@
                 },
                 success: function(data) {
                     if (data == "like") {
-                        btn.parent().addClass("bg-warning");
+                        btn.parent().addClass("like-color");
+                        btn.removeClass("text-secondary");
+                        btn.addClass("like-color");
                         btn.html("Unlike");
                         count_post_likes(val, data, btn);
-
-
                     } else {
-                        btn.parent().removeClass("bg-warning");
+                        btn.parent().removeClass("like-color");
+                        btn.removeClass("like-color");
+                        btn.addClass("text-secondary");
                         btn.html('<span class="fa fa-thumbs-up" style="font-size:22px;"> Like</span>');
                         count_post_likes(val, data, btn);
 
@@ -213,7 +214,9 @@
         // comment events
         $(".make_a_comment").on("click", function() {
             $(this).parents(".post").find(".add_comment_form").toggleClass("d-none");
-            $(this).parent().toggleClass("bg-warning");
+            $(this).parent().toggleClass("like-color");
+            $(this).find("p").toggleClass("text-white");
+            $(this).find("p").toggleClass("text-secondary");
 
         });
         $(".comment_section").on("click", ".add_comment", function() {
@@ -415,6 +418,51 @@
             }
         });
         load_friends();
+
+        // Edit personal info
+        $("#edit_personal_info").on("click", function() {
+            $(this).addClass("d-none");
+            $("#save_edited_personal_info").removeClass("d-none");
+            $("#show_personal_info").addClass("d-none");
+            $("#edit_personal_info_form").removeClass("d-none");
+            $("#input_firstname").val($("#firstname").html());
+            $("#input_lastname").val($("#lastname").html());
+            $("#input_email").val($("#email").html());
+
+            if ($("#gender").html().toLowerCase() == "male") {
+                $("#male").prop("checked", true);
+            } else if ($("#gender").html().toLowerCase() == "female") {
+                $("#female").prop("checked", true);
+            }
+            var date = $("#birthday").html().split("/");
+            $("[name = day").val(date[0]);
+            $("[name = month").val(date[1]);
+            $("[name = year").val(date[2]);
+        });
+
+        $("#personal_info").on("submit", "#edit_personal_info_form", function(e) {
+            e.preventDefault();
+            var formdata = new FormData(this);
+            formdata.append("action", "edit_presonal_info");
+            $.ajax({
+                url: "actions.php",
+                method: "POST",
+                data: formdata,
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function(data) {
+                    $("#show_personal_info").html(data);
+                    $(this).addClass("d-none");
+                    $("#edit_personal_info").removeClass("d-none");
+                    $("#show_personal_info").removeClass("d-none");
+                    $("#edit_personal_info_form").addClass("d-none");
+                }
+            });
+
+
+        });
+
     }); //Document ready
 </script>
 </body>

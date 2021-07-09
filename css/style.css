@@ -83,8 +83,12 @@
   width: 10px;
   text-align: center;
   height: 10px;
-  border: 1px solid rgb(158, 158, 161);
-  background-color: rgb(158, 158, 161);
+  background-color: #1c1f23;
   color: white;
   border-radius: 50%;
+}
+
+.like-color{
+  background-color: #800000;
+  color: white;
 }

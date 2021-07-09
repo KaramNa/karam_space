@@ -219,4 +219,18 @@ if (isset($_POST["action"])) {
             echo $result["total"];
         }
     }
+
+    // Edit personal info
+    if ($action == "edit_presonal_info") {
+        $firstname = $_POST["firstname"];
+        $lastname = $_POST["lastname"];
+        $email = $_POST["email"];
+        $gender = $_POST["gender"];
+        $birthday = $_POST["day"] . "/" . $_POST["month"] . "/" . $_POST["year"];
+        $update_info_query = "UPDATE users SET firstname = '$firstname', lastname = '$lastname', gender = '$gender', email = '$email', birthday = '$birthday' WHERE user_id = '$current_user'";
+        $con->query($update_info_query);
+        $user = $con->query("SELECT * FROM users WHERE user_id = '$current_user'");
+        $user = $user->fetch_assoc();
+        load_personal_info($user);
+    }
 }

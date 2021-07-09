@@ -1,5 +1,5 @@
 <?php
-
+// include("session.php");
 function show_posts($user_id, $con, $show_post_customize)
 {
     if ($show_post_customize == "friends_posts") {
@@ -36,8 +36,9 @@ function show_posts($user_id, $con, $show_post_customize)
             $post_id = $row["post_id"];
             $post_date = $row["post_date"];
             $posted_by_id = $row["user_id"];
+            $current_user = $GLOBALS["current_user"];
             $post_likes_num = count_likes($post_id, $con);
-            $liked_by_me = $con->query("SELECT * FROM likes WHERE post_id = '$post_id' AND user_id = '$user_id'");
+            $liked_by_me = $con->query("SELECT * FROM likes WHERE post_id = '$post_id' AND user_id = '$current_user'");
             if ($liked_by_me->num_rows > 0) {
                 $liked_by_me_flag = true;
             } else {
@@ -180,13 +181,14 @@ function show_one_post($con, $user_image, $posted_by, $post_date, $user_id, $pos
             if ($add_show == "add") {
                 $likes_count = 0;
             } else {
-                $likes_query = $con->query("SELECT * FROM likes WHERE post_id = '$post_id' AND user_id = '$user_id'");
+                $current_user = $GLOBALS["current_user"];
+                $likes_query = $con->query("SELECT * FROM likes WHERE post_id = '$post_id' AND user_id = '$current_user'");
                 $likes_count = $likes_query->num_rows;
             }
             if ($likes_count > 0) { ?>
-                <div class="col-6 btn btn-outline-light bg-warning p-0">
+                <div class="col-6 btn btn-outline-light like-color p-0">
                     <button type="button" class="like_post btn text-secondary form-control" value="<?php echo $post_id ?>">
-                        <p class="text-secondary m-0">Unlike</p>
+                        <p class="text-white m-0">Unlike</p>
                     </button>
                 </div>
             <?php
@@ -202,7 +204,7 @@ function show_one_post($con, $user_image, $posted_by, $post_date, $user_id, $pos
 
             <div class="col-6 btn btn-outline-light p-0">
                 <button type="button" class="make_a_comment btn text-secondary form-control" value="<?php echo "c" . $post_id ?>">
-                    <p class="text-secondary m-0">Comment</p>
+                    <p class="text-secondary m-0 fw-bold">Comment</p>
                 </button>
             </div>
         </div>
@@ -214,7 +216,7 @@ function show_one_post($con, $user_image, $posted_by, $post_date, $user_id, $pos
                         <textarea data-postid="<?php echo $post_id ?>" class="form-control comment_content" name="comment" style="height: 16px;" placeholder="Enter a comment"></textarea>
                     </div>
                     <div class="col-lg-2 col-md-4 col-4 text-center">
-                        <button type="button" class="btn btn-secondary btn-sm add_comment" value="<?php echo $post_id ?>">Comment</button>
+                        <button type="button" class="btn btn-dark btn-sm add_comment" value="<?php echo $post_id ?>">Comment</button>
                     </div>
                 </div>
                 <?php
@@ -248,5 +250,17 @@ function like_status($liked_by_me_flag, $post_likes_num)
     } else if (!$liked_by_me_flag && $post_likes_num == 0) {
         echo "Be the first to like this";
     }
+}
+
+function load_personal_info($user)
+{
+?>
+    <p><b>First Name: </b><span id="firstname" class="text-capitalize"><?php echo $user["firstname"] ?></span></p>
+    <p><b>Last Name: </b><span id="lastname" class="text-capitalize"><?php echo $user["lastname"] ?></span></p>
+    <p><b>Email Address: </b><span id="email"><?php echo $user["email"] ?></span></p>
+    <p><b>Gender: </b><span id="gender" class="text-capitalize"><?php echo $user["gender"] ?></span></p>
+    <p><b>Birthday: </b><span id="birthday" class="text-capitalize"><?php echo $user["birthday"] ?></span></p>
+<?php
+
 }
 ?>
