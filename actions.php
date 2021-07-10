@@ -6,7 +6,6 @@ include("functions.php");
 if (isset($_POST["action"])) {
     $action = $_POST["action"];
     $current_user = $_SESSION["user_id"];
-
     // Sign up
     if ($action == "signup") {
         $error_firstname = "";
@@ -63,7 +62,6 @@ if (isset($_POST["action"])) {
         }
         $output = array($error_firstname, $error_lastname, $error_new_email, $error_new_password, $gender);
         echo json_encode($output);
-
     }
 
     // Search actions

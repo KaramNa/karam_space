@@ -13,14 +13,9 @@ if (isset($_SESSION['user_id'])) {
 } else {
   $error_email = "";
   $error_password = "";
-  $error_firstname = "";
-  $error_lastname = "";
-  $error_new_email = "";
-  $error_new_password = "";
-  $error_gender = "";
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
     include('database-config.php');
-    $singinOk = 1;
+    $singinOk = true;
     // Signin
     if (array_key_exists('signin', $_POST)) {
       $email = $_POST["email"];
@@ -28,13 +23,13 @@ if (isset($_SESSION['user_id'])) {
 
       if ($email == "") {
         $error_email = "<label class='error'>* Required field</label>";
-        $singinOk = 0;
+        $singinOk = false;
       }
       if ($password == "") {
         $error_password = "<label class='error'>* Required field</label>";
-        $singinOk = 0;
+        $singinOk = false;
       }
-      if ($singinOk == 1) {
+      if ($singinOk) {
         $sql = $con->query("SELECT * FROM users WHERE email = '$email' AND password = '$password'");
         $row = $sql->fetch_assoc();
         if ($sql !== false and $sql->num_rows > 0) {
@@ -46,60 +41,7 @@ if (isset($_SESSION['user_id'])) {
       }
     }
   }
-  // Sign up
-    include('database-config.php');
-
-    if (array_key_exists('signup', $_POST)) {
-      $firstname = test_input($_POST["firstname"]);
-      $lastname = test_input($_POST["lastname"]);
-      $email = test_input($_POST["email"]);
-      $newpassword = test_input($_POST["newpassword"]);
-      $birthday = test_input($_POST["day"] . "/" . $_POST["month"] . "/" . $_POST["year"]);
-      $gender = test_input($_POST["gender"]);
-      if($gender == "female"){
-        $profile_picture = "images/profile_pictures/female.png";
-      
-      }else {
-        $profile_picture = "images/profile_pictures/male.jpg";
-      }
-      $singupOk = 1;
-
-      if ($firstname == "") {
-        $error_firstname = "<label class='error'>* Required field</label>";
-        $singupOk = 0;
-      }
-      if ($lastname == "") {
-        $error_lastname = "<label class='error'>* Required field</label>";
-        $singupOk = 0;
-      }
-      if ($email == "") {
-        $error_new_email = "<label class='error'>* Required field</label>";
-        $singupOk = 0;
-      }
-      $sql = $con->query("SELECT * FROM users WHERE email='$email'");
-      if ($sql->num_rows > 0) {
-        $error_new_email = "<label class='error'>Email address already exsits</label>";
-        $singupOk = 0;
-      }
-      if ($newpassword == "") {
-        $error_new_password = "<label class='error'>* Required field</label>";
-        $singupOk = 0;
-      }
-      if ($gender == "") {
-        $error_gender = "<label class='error'>* Required field</label>";
-        $singupOk = 0;
-      }
-      if ($singupOk == 1) {
-        $con->query("INSERT INTO users(firstname,lastname,email,password,gender,birthday ,profile_picture) VALUES('$firstname','$lastname','$email','$newpassword','$gender','$birthday','$profile_picture')");
-        $sql = $con->query("SELECT * FROM users WHERE email = '$email'");
-        $row = $sql->fetch_assoc();
-        if ($sql !== false and $sql->num_rows > 0) {
-          $_SESSION["user_id"] = $row["user_id"];
-          header('location:home.php');
-        }
-      }
-    }
-  }
+}
 
 ?>
 <!doctype html>
@@ -134,7 +76,7 @@ if (isset($_SESSION['user_id'])) {
               <input class="form-control" type="password" name="password" placeholder="Enter your password">
             </div>
             <button class="btn btn-primary  form-control mt-4" name="signin" type="submit">Sign in</button>
-            <a href="#" class="nav-link text-primary  text-center">Forget your password?</a>
+            <a id="forget" href="#" class="nav-link text-primary  text-center">Forget your password?</a>
             <hr>
             <button type="button" class="btn btn-warning form-control" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Sign up</button>
           </form>
@@ -153,26 +95,26 @@ if (isset($_SESSION['user_id'])) {
           </div>
           <div class="modal-body">
             <div class="container-fluid">
-              <form action="" method="POST">
+              <form id="signup_form" action="" method="POST">
                 <div class="row">
-                  <div class="col-sm-6 px-1">
-                    <?php echo $error_firstname ?>
-                    <input class="form-control mt-2" type="text" name="firstname" placeholder="First name">
+                  <div class="col-sm-6 px-1 mt-2">
+                    <label id="error_firstname" class='error p-0'></label>
+                    <input class="form-control" type="text" name="firstname" placeholder="First name">
                   </div>
-                  <div class="col-sm-6 px-1">
-                    <?php echo $error_lastname ?>
-                    <input class="form-control mt-2" type="text" name="lastname" placeholder="Last name">
+                  <div class="col-sm-6 px-1  mt-2">
+                    <label id="error_lastname" class='error p-0'></label>
+                    <input class="form-control" type="text" name="lastname" placeholder="Last name">
                   </div>
                 </div>
-                <div class="row">
+                <div class="row mt-2">
+                  <label id="error_new_email" class='error p-1'></label>
                   <div class="px-1">
-                    <?php echo $error_new_email ?>
-                    <input class="form-control mt-2" type="email" name="email" placeholder="Email">
+                    <input class="form-control" type="email" name="email" placeholder="Email">
                   </div>
                 </div>
-                <div class="row">
-                  <?php echo $error_new_password ?>
-                  <div class="px-1"><input class="form-control mt-2" type="password" name="newpassword" placeholder="New password">
+                <div class="row  mt-2">
+                  <label id="error_new_password" class='error p-1'></label>
+                  <div class="px-1"><input class="form-control" type="password" name="newpassword" placeholder="New password">
                   </div>
                 </div>
                 <div class="row">
@@ -218,7 +160,7 @@ if (isset($_SESSION['user_id'])) {
                 </div>
                 <div class="row">
                   <p class="mb-0 mt-2 px-1">Gender</p>
-                  <?php echo $error_gender ?>
+                  <label id="error_gender" class='error'></label>
                   <div class="col-sm-4 px-1 mt-2">
                     <div class="form-control d-flex justify-content-between align-items-center">
                       <label for="female">Female</label>
@@ -229,12 +171,6 @@ if (isset($_SESSION['user_id'])) {
                     <div class="form-control d-flex justify-content-between align-items-center">
                       <label for="male">Male</label>
                       <input type="radio" id="male" name="gender" value="male">
-                    </div>
-                  </div>
-                  <div class="col-sm-4 px-1 mt-2">
-                    <div class="form-control d-flex justify-content-between align-items-center">
-                      <label for="custom">Custom</label>
-                      <input type="radio" id="custom" name="gender" value="custom">
                     </div>
                   </div>
                 </div>
@@ -256,7 +192,35 @@ if (isset($_SESSION['user_id'])) {
 
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-  
+  <script>
+    $(document).ready(function() {
+      $("#signup_form").on("submit", function(e) {
+        e.preventDefault();
+        var formdata = new FormData(this);
+        $.ajax({
+          url: "signup.php",
+          method: "POST",
+          data: formdata,
+          processData: false,
+          cache: false,
+          contentType: false,
+          success: function(data) {
+            var result = jQuery.parseJSON(data);
+            $("#error_firstname").html(result[0]);
+            $("#error_lastname").html(result[1]);
+            $("#error_new_email").html(result[2]);
+            $("#error_new_password").html(result[3]);
+            $("#error_gender").html(result[4]);
+            console.log(result);
+            if (result[5]) {
+              window.location.href = "home.php";
+            }
+
+          }
+        });
+      });
+    });
+  </script>
 </body>
 
 </html>
