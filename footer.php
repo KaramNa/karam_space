@@ -26,6 +26,10 @@
 <script src="js/script.js"></script>
 <script>
     $(document).ready(function() {
+        // $(".navbar-nav .nav-link").on("click", function() {
+        //     $(".navbar-nav").find(".active").removeClass("active");
+        //     $(this).addClass("active");
+        // });
         // Preview image 
         $('input[type="file"]').on('change', function() {
             function img_preview_func(input, img_previewer, clear_button) {

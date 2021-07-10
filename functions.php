@@ -1,13 +1,13 @@
 <?php
 // include("session.php");
-function show_posts($user_id, $con, $show_post_customize)
+function show_posts($current_profile_user, $con, $show_post_customize)
 {
-    if ($show_post_customize == "friends_posts") {
-        $friends = $con->query("
-                        SELECT * FROM friend_request WHERE request_from_id = '$user_id' OR request_to_id = '$user_id' 
+    $no_posts_to_show = true;
+    $friends = $con->query("
+                        SELECT * FROM friend_request WHERE request_from_id = '$current_profile_user' OR request_to_id = '$current_profile_user' 
                         AND request_status = 'confirm'");
+    if ($friends->num_rows == 0) {
     }
-    $flag = 0;
     function count_likes($post_id, $con)
     {
         if ($post_id > 0) {
@@ -17,18 +17,21 @@ function show_posts($user_id, $con, $show_post_customize)
             return $result["total"];
         }
     }
+    $included_current_user = false;
     do {
-        if ($flag == 0) {
-            $friend_id = $user_id;
-            $flag = 1;
+        if (!$included_current_user) {
+            $user_id = $current_profile_user;
+            $included_current_user = true;
             global $friend;
-        } elseif ($friend["request_from_id"] == $user_id) {
-            $friend_id = $friend["request_to_id"];
-        } elseif ($friend["request_to_id"] == $user_id) {
-            $friend_id = $friend["request_from_id"];
+        } elseif ($friend["request_from_id"] == $current_profile_user) {
+            $user_id = $friend["request_to_id"];
+        } elseif ($friend["request_to_id"] == $current_profile_user) {
+            $user_id = $friend["request_from_id"];
         }
-        $query = $con->query("SELECT * FROM users JOIN posts ON users.user_id=$friend_id AND posts.user_id=$friend_id ORDER BY post_id DESC");
+        $query = $con->query("SELECT * FROM users JOIN posts ON users.user_id=$user_id AND posts.user_id=$user_id ORDER BY post_id DESC");
+
         while ($row = $query->fetch_assoc()) {
+            $no_posts_to_show = false;
             $posted_by = $row["firstname"] . " " . $row["lastname"];
             $post_image = $row["post_image"];
             $user_image = $row["profile_picture"];
@@ -45,12 +48,15 @@ function show_posts($user_id, $con, $show_post_customize)
                 $liked_by_me_flag = false;
             }
 
-            show_one_post($con, $user_image, $posted_by, $post_date, $user_id, $posted_by_id, $post_id, $content, $post_image, "show", $liked_by_me_flag, $post_likes_num);
+            show_one_post($con, $user_image, $posted_by, $post_date, $current_user, $posted_by_id, $post_id, $content, $post_image, "show", $liked_by_me_flag, $post_likes_num);
         }
         if ($show_post_customize == "my_posts") {
             break;
         }
     } while ($friend = $friends->fetch_assoc());
+    if ($no_posts_to_show) {
+        echo '<div class="border container-fluid p-0 mt-3 post bg-white text-center rounded"><h1 class="text-secondary">Nothing to show<h1></div>';
+    }
 }
 
 function show_comment($user_image, $commented_by, $comment_date, $comment_id, $comment_content, $user_id, $commented_by_id)
@@ -71,7 +77,8 @@ function show_comment($user_image, $commented_by, $comment_date, $comment_id, $c
             <div class="d-flex me-2 justify-content-between">
                 <div>
                     <?php
-                    if ($user_id == $commented_by_id) {
+                    $current_user = $GLOBALS["current_user"];
+                    if ($current_user == $commented_by_id) {
                     ?>
                         <span class="small"><button class="link-button ps-0" id="edit_comment" onclick="edit_comment(this.value)" value="<?php echo $comment_id ?>" data-id="<?php echo "edit_btn" . $comment_id ?>">Edit</button></span>
                         <span class="small"><button class="link-button small delete_comment" value="<?php echo $comment_id ?>" data-id="<?php echo "delete_btn" . $comment_id ?>">Delete</button></span>
@@ -145,7 +152,8 @@ function show_one_post($con, $user_image, $posted_by, $post_date, $user_id, $pos
 
             <div class="col-2 d-flex justify-content-end">
                 <?php
-                if ($user_id == $posted_by_id) {
+                $current_user = $GLOBALS["current_user"];
+                if ($current_user == $posted_by_id) {
                 ?>
                     <div class="dropdown nav-item">
                         <a href="#" class="fa fa-angle-double-down text-secondary nav-link" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="friend_request_area">
@@ -262,5 +270,14 @@ function load_personal_info($user)
     <p><b>Birthday: </b><span id="birthday" class="text-capitalize"><?php echo $user["birthday"] ?></span></p>
 <?php
 
+
+}
+
+function test_input($data)
+{
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
 }
 ?>

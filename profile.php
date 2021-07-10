@@ -84,7 +84,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="row border bg-white rounded ">
                 <div class="d-flex justify-content-between align-items-center my-2">
                     <p class="fw-bold m-0">Personal Information</p>
-                    <button id="edit_personal_info" class="btn btn-dark">Edit</button>
+                    <?php
+                    if ($current_user == $request_to_id) {
+
+                    ?>
+                        <button id="edit_personal_info" class="btn btn-dark">Edit</button>
+                    <?php } ?>
                 </div>
                 <div class="text-center">
                     <hr class="mt-0">
@@ -92,95 +97,101 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div id="show_personal_info" class="">
                     <?php load_personal_info($user) ?>
                 </div>
-                <form id="edit_personal_info_form" method="POST" action="" class="d-none mb-3">
-                    <p><b>First Name: </b><input id="input_firstname" name="firstname" class="form-control" type="text" class="">
-                    <p><b>Last Name: </b><input id="input_lastname" name="lastname" class="form-control" type="text" class="">
-                    <p><b>Email Address: </b><input id="input_email" name="email" class="form-control" type="text" class="">
-                    <p class="mb-0"><b>Gender: </b></p>
-                    <div class="row mb-3" id="input_gender">
-                        <div class="col-sm-4 px-1 mt-2">
-                            <div class="form-control d-flex justify-content-between align-items-center">
-                                <label for="female">Female</label>
-                                <input type="radio" id="female" name="gender" value="female">
-                            </div>
-                        </div>
-                        <div class="col-sm-4 px-1 mt-2">
-                            <div class="form-control d-flex justify-content-between align-items-center">
-                                <label for="male">Male</label>
-                                <input type="radio" id="male" name="gender" value="male">
-                            </div>
-                        </div>
-                        <div class="col-sm-4 px-1 mt-2">
-                            <div class="form-control d-flex justify-content-between align-items-center">
-                                <label for="custom">Custom</label>
-                                <input type="radio" id="custom" name="gender" value="custom">
-                            </div>
-                        </div>
-                    </div>
 
-                    <p class="mb-0"><b>Birthday: </b></p>
-                    <div class="row mb-3" id="input_birthday">
-                        <div class="col-sm-4 px-1 mt-2">
-                            <select name="day" class="form-select">
-                                <?php
-                                $day = 1;
-                                while ($day <= 31) {
-                                    echo "<option> $day </option>";
-                                    $day++;
-                                }
-                                ?>
-                            </select>
+                <?php
+                if ($current_user == $request_to_id) {
+
+                ?>
+                    <form id="edit_personal_info_form" method="POST" action="" class="d-none mb-3">
+                        <p><b>First Name: </b><input id="input_firstname" name="firstname" class="form-control" type="text" class="">
+                        <p><b>Last Name: </b><input id="input_lastname" name="lastname" class="form-control" type="text" class="">
+                        <p><b>Email Address: </b><input id="input_email" name="email" class="form-control" type="text" class="">
+                        <p class="mb-0"><b>Gender: </b></p>
+                        <div class="row mb-3" id="input_gender">
+                            <div class="col-sm-4 px-1 mt-2">
+                                <div class="form-control d-flex justify-content-between align-items-center">
+                                    <label for="female">Female</label>
+                                    <input type="radio" id="female" name="gender" value="female">
+                                </div>
+                            </div>
+                            <div class="col-sm-4 px-1 mt-2">
+                                <div class="form-control d-flex justify-content-between align-items-center">
+                                    <label for="male">Male</label>
+                                    <input type="radio" id="male" name="gender" value="male">
+                                </div>
+                            </div>
+                            <div class="col-sm-4 px-1 mt-2">
+                                <div class="form-control d-flex justify-content-between align-items-center">
+                                    <label for="custom">Custom</label>
+                                    <input type="radio" id="custom" name="gender" value="custom">
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-sm-4 px-1 mt-2">
-                            <select name="month" class="form-select">
-                                <option>January</option>
-                                <option>Febuary</option>
-                                <option>March</option>
-                                <option>April</option>
-                                <option>May</option>
-                                <option>June</option>
-                                <option>July</option>
-                                <option>August</option>
-                                <option>September</option>
-                                <option>October</option>
-                                <option>November</option>
-                                <option>December</option>
-                            </select>
+
+                        <p class="mb-0"><b>Birthday: </b></p>
+                        <div class="row mb-3" id="input_birthday">
+                            <div class="col-sm-4 px-1 mt-2">
+                                <select name="day" class="form-select">
+                                    <?php
+                                    $day = 1;
+                                    while ($day <= 31) {
+                                        echo "<option> $day </option>";
+                                        $day++;
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="col-sm-4 px-1 mt-2">
+                                <select name="month" class="form-select">
+                                    <option>January</option>
+                                    <option>Febuary</option>
+                                    <option>March</option>
+                                    <option>April</option>
+                                    <option>May</option>
+                                    <option>June</option>
+                                    <option>July</option>
+                                    <option>August</option>
+                                    <option>September</option>
+                                    <option>October</option>
+                                    <option>November</option>
+                                    <option>December</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4 px-1 mt-2">
+                                <select name="year" class="form-select">
+                                    <?php
+                                    $year = 2021;
+                                    while ($year >= 1900) {
+                                        echo "<option> $year </option>";
+                                        $year--;
+                                    }
+                                    ?>
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-sm-4 px-1 mt-2">
-                            <select name="year" class="form-select">
-                                <?php
-                                $year = 2021;
-                                while ($year >= 1900) {
-                                    echo "<option> $year </option>";
-                                    $year--;
-                                }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-                    <button type="submit" id="save_edited_personal_info" class="btn btn-dark d-none">Save</button>
-                </form>
-                <div class="text-center">
-                    <hr class="mt-0">
-                </div>
-                <div>
-                    <form action="" method="POST" enctype="multipart/form-data">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <p class="fw-bold m-0">Update Profile Picture</p>
-                            <button type="button" class="btn btn-dark" onclick="document.getElementById('user_image_input').click();">Choose</button>
-                        </div>
-                        <div class="mt-3 position-relative mb-2 d-none">
-                            <input type="file" id="user_image_input" name="upload_user_image" hidden>
-                            <a href="#" role="button" id="profile_clear_imgInp" class="unselect_img">X</a>
-                            <img src="" alt="" id="profile_img_preview" width="100px" height="100px" class="p-1">
-                            <button type="submit" class="btn btn-dark position-absolute end-0 bottom-0">Update</button>
-                        </div>
+                        <button type="submit" id="save_edited_personal_info" class="btn btn-dark d-none">Save</button>
                     </form>
-                </div>
-            </div>
 
-            <div class="row border mt-3 p-1 bg-white rounded">
+                    <div class="text-center">
+                        <hr class="mt-0">
+                    </div>
+                    <div>
+                        <form action="" method="POST" enctype="multipart/form-data">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <p class="fw-bold m-0">Update Profile Picture</p>
+                                <button type="button" class="btn btn-dark" onclick="document.getElementById('user_image_input').click();">Choose</button>
+                            </div>
+                            <div class="mt-3 position-relative mb-2 d-none">
+                                <input type="file" id="user_image_input" name="upload_user_image" hidden>
+                                <a href="#" role="button" id="profile_clear_imgInp" class="unselect_img">X</a>
+                                <img src="" alt="" id="profile_img_preview" width="100px" height="100px" class="p-1">
+                                <button type="submit" class="btn btn-dark position-absolute end-0 bottom-0">Update</button>
+                            </div>
+                        </form>
+                    </div>
+                <?php } ?>
+            </div>
+            <div class="row border mt-3 mb-5 p-1 bg-white rounded">
                 <div class="row p-0 m-0  align-items-center">
                     <div class="col-md-4">
                         <h5 class="m-0">Friends</h5>
@@ -190,7 +201,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 </div>
                 <div class="row m-0 mt-2 border px-0">
-                    <ul id="friend_list">
+                    <ul id="friend_list" class="mt-3">
                     </ul>
                 </div>
             </div>

@@ -15,10 +15,7 @@ $location = $con->query("SELECT profile_picture FROM users WHERE user_id='$curre
             <div class="col-12">
                 <ul class="navbar-nav border mt-3 p-4">
                     <h3>Personal Info</h3>
-                    <div class="text-center">
-                        <hr class="mt-0">
-                    </div>
-                    <li class="text-capitalize"><strong>Full Name: </strong><?php echo $firstname . " " . $lastname ?></li>
+                    <li class="text-capitalize"><strong>First Name: </strong><?php echo $firstname ?></li>
                     <li class="text-capitalize"><strong>Last Name: </strong><?php echo $lastname ?></li>
                     <li><strong>Email: </strong><?php echo $email ?></li>
                     <li class="text-capitalize"><strong>Gender: </strong><?php echo $gender ?></li>
@@ -39,8 +36,8 @@ $location = $con->query("SELECT profile_picture FROM users WHERE user_id='$curre
                             <img src="" alt="" id="img_preview" width="100px" height="100px" class="p-1">
                         </div>
                         <div class="mt-3 d-flex justify-content-between">
-                            <button type="button" class="btn btn-dark" name="fileToUpload" onclick="document.getElementById('imgInp').click();">Upload photo</button>
-                            <button type="submit" class="btn btn-dark" name="Submit">Share</button>
+                            <button type="button" class="btn btn-secondary" name="fileToUpload" onclick="document.getElementById('imgInp').click();">Upload photo</button>
+                            <button type="submit" class="btn btn-secondary" name="Submit">Share</button>
                         </div>
                     </form>
                 </div>

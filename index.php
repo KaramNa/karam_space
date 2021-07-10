@@ -56,7 +56,12 @@ if (isset($_SESSION['user_id'])) {
       $newpassword = test_input($_POST["newpassword"]);
       $birthday = test_input($_POST["day"] . "/" . $_POST["month"] . "/" . $_POST["year"]);
       $gender = test_input($_POST["gender"]);
-      $profile_picture = "images/profile_pictures/default.jpg";
+      if($gender == "female"){
+        $profile_picture = "images/profile_pictures/female.png";
+      
+      }else {
+        $profile_picture = "images/profile_pictures/male.jpg";
+      }
       $singupOk = 1;
 
       if ($firstname == "") {
@@ -239,7 +244,7 @@ if (isset($_SESSION['user_id'])) {
                     Notifications from us and can opt out any time.</p>
                 </div>
                 <div class="row justify-content-center mt-3">
-                  <button type="submit" name="signup" class="btn btn-warning form-control w-50">Sign up</button>
+                  <button id="signup" type="submit" name="signup" class="btn btn-warning form-control w-50">Sign up</button>
                 </div>
               </form>
             </div>
@@ -252,7 +257,6 @@ if (isset($_SESSION['user_id'])) {
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
   
-  </script>
 </body>
 
 </html>
