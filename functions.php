@@ -55,36 +55,36 @@ function show_posts($current_profile_user, $con, $show_post_customize)
         }
     } while ($friend = $friends->fetch_assoc());
     if ($no_posts_to_show) {
-        echo '<div class="border container-fluid p-0 mt-3 post bg-white text-center rounded"><h1 class="text-secondary">Nothing to show<h1></div>';
+        echo '<div class="border container-fluid p-0 mt-3 post bg-white text-center rounded"><h1 id="no_posts" class="text-secondary">Nothing to show<h1></div>';
     }
 }
 
 function show_comment($user_image, $commented_by, $comment_date, $comment_id, $comment_content, $user_id, $commented_by_id)
 {
 ?>
-    <div class="row mt-1 comment_to_remove">
+    <div name="comment_field" class="row mt-1">
         <div class="col-xl-1 col-lg-2 col-md-2 col-2"><img class="img-size ms-0 rounded-circle img-comment" src="<?php echo $user_image ?>" alt=""></div>
         <div class="col-xl-11 col-lg-10 col-md-10 col-10 make-space ps-1">
             <div class="bg-light rounded me-2 p-1">
                 <p class="mb-0 text-capitalize"><strong><?php echo $commented_by ?></strong></p>
-                <div id="new_comment" class="d-none" data-id="<?php echo "div" . $comment_id ?>">
-                    <textarea class="form-control" id="new_comment_content" rows="1" placeholder="Enter a comment" data-id="<?php echo "textarea" . $comment_id ?>"></textarea>
-                    <button class="link-button small done_comment_edit" value="<?php echo $comment_id ?>">Done</button>
-                    <button class="link-button small" onclick="edit_cancel()">Cancel</button>
+                <div name="new_comment_panel" class="d-none">
+                    <textarea name="new_comment_content" class="form-control"  rows="1" placeholder="Enter a comment"></textarea>
+                    <button name="edit_comment_done" class="link-button small" value="<?php echo $comment_id ?>">Done</button>
+                    <button name="edit_comment_cancel" class="link-button small">Cancel</button>
                 </div>
-                <p id="old_comment" class="old_comment text-break mb-0" data-id="<?php echo "p" . $comment_id ?>"><?php echo $comment_content ?></p>
+                <p name="old_comment" class="text-break mb-0 preserve_newline"><?php echo test_output($comment_content) ?></p>
             </div>
             <div class="d-flex me-2 justify-content-between">
-                <div>
+                <div name="comment_edit_delete">
                     <?php
                     $current_user = $GLOBALS["current_user"];
                     if ($current_user == $commented_by_id) {
                     ?>
-                        <span class="small"><button class="link-button ps-0" id="edit_comment" onclick="edit_comment(this.value)" value="<?php echo $comment_id ?>" data-id="<?php echo "edit_btn" . $comment_id ?>">Edit</button></span>
-                        <span class="small"><button class="link-button small delete_comment" value="<?php echo $comment_id ?>" data-id="<?php echo "delete_btn" . $comment_id ?>">Delete</button></span>
+                        <span class="small"><button class="link-button ps-0" name="edit_comment">Edit</button></span>
+                        <span class="small"><button name="delete_comment" class="link-button small " value="<?php echo $comment_id ?>">Delete</button></span>
                     <?php } ?>
                 </div>
-                <span class="small" data-id="<?php echo "date" . $comment_id ?>"><?php echo $comment_date ?></span>
+                <span name="date" class="small"><?php echo $comment_date ?></span>
             </div>
         </div>
     </div>
@@ -146,7 +146,7 @@ function show_one_post($con, $user_image, $posted_by, $post_date, $user_id, $pos
                 <img class="img-size rounded-circle" src="<?php echo $user_image ?>" alt="">
             </div>
             <div class="col-xl-9 col-lg-7 col-md-7 col-8 ps-1 d-flex flex-column justify-content-center">
-                <div class="text-capitalize fw-bold"><?php echo $posted_by ?></div>
+                <div class="text-capitalize fw-bold"><a class="link text-dark" href="<?php echo "profile.php?id=" . $posted_by_id ?>"><?php echo $posted_by ?></a></div>
                 <span><?php echo $post_date ?></span>
             </div>
 
@@ -173,7 +173,7 @@ function show_one_post($con, $user_image, $posted_by, $post_date, $user_id, $pos
                 ?>
             </div>
         </div>
-        <div class="row my-4 px-3 post_content" name="post_content" data-id="<?php echo 'div' .  $post_id ?>"><?php echo $content ?></div>
+        <div class="row my-4 px-3 post_content text-break preserve_newline" name="post_content" data-id="<?php echo 'div' .  $post_id ?>"><?php echo test_output($content) ?></div>
         <div class=""><img id="<?php echo 'postImg' .  $post_id ?>" class="img-fluid post_img" src="<?php echo $post_image ?>" alt="" data-id="<?php echo 'postImg' .  $post_id ?>"></div>
         <div class="row ms-2 count_post_likes">
             <?php
@@ -273,7 +273,7 @@ function load_personal_info($user)
 
 }
 
-function test_input($data)
+function test_output($data)
 {
     $data = trim($data);
     $data = stripslashes($data);

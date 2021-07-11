@@ -1,13 +1,7 @@
 <?php
 session_start();
 
-function test_input($data)
-{
-  $data = trim($data);
-  $data = stripslashes($data);
-  $data = htmlspecialchars($data);
-  return $data;
-}
+
 if (isset($_SESSION['user_id'])) {
   header('location:home.php');
 } else {
@@ -18,8 +12,8 @@ if (isset($_SESSION['user_id'])) {
     $singinOk = true;
     // Signin
     if (array_key_exists('signin', $_POST)) {
-      $email = $_POST["email"];
-      $password = $_POST["password"];
+      $email = $con->real_escape_string($_POST["email"]);
+      $password = $con->real_escape_string($_POST["password"]);
 
       if ($email == "") {
         $error_email = "<label class='error'>* Required field</label>";
@@ -54,7 +48,6 @@ if (isset($_SESSION['user_id'])) {
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-  <Script src="js/script.js"></Script>
   <title>Welcome to Karam Space</title>
 </head>
 
@@ -214,8 +207,7 @@ if (isset($_SESSION['user_id'])) {
             console.log(result);
             if (result[5]) {
               window.location.href = "home.php";
-            }
-
+            } 
           }
         });
       });

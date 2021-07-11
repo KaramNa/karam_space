@@ -120,12 +120,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <input type="radio" id="male" name="gender" value="male">
                                 </div>
                             </div>
-                            <div class="col-sm-4 px-1 mt-2">
-                                <div class="form-control d-flex justify-content-between align-items-center">
-                                    <label for="custom">Custom</label>
-                                    <input type="radio" id="custom" name="gender" value="custom">
-                                </div>
-                            </div>
                         </div>
 
                         <p class="mb-0"><b>Birthday: </b></p>
@@ -191,7 +185,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 <?php } ?>
             </div>
-            <div class="row border mt-3 mb-5 p-1 bg-white rounded">
+            <div class="row border mt-3 p-1 bg-white rounded">
                 <div class="row p-0 m-0  align-items-center">
                     <div class="col-md-4">
                         <h5 class="m-0">Friends</h5>

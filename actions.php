@@ -13,12 +13,12 @@ if (isset($_POST["action"])) {
         $error_new_email = "";
         $error_new_password = "";
         $error_gender = "";
-        $firstname = test_input($_POST["firstname"]);
-        $lastname = test_input($_POST["lastname"]);
-        $email = test_input($_POST["email"]);
-        $newpassword = test_input($_POST["newpassword"]);
-        $birthday = test_input($_POST["day"] . "/" . $_POST["month"] . "/" . $_POST["year"]);
-        $gender = test_input($_POST["gender"]);
+        $firstname = $con->real_escape_string($_POST["firstname"]);
+        $lastname = $con->real_escape_string($_POST["lastname"]);
+        $email = $con->real_escape_string($_POST["email"]);
+        $newpassword = $con->real_escape_string($_POST["newpassword"]);
+        $birthday = $con->real_escape_string($_POST["day"] . "/" . $_POST["month"] . "/" . $_POST["year"]);
+        $gender = $con->real_escape_string($_POST["gender"]);
         if ($gender == "female") {
             $profile_picture = "images/profile_pictures/female.png";
         } else {
@@ -66,7 +66,7 @@ if (isset($_POST["action"])) {
 
     // Search actions
     if ($action == "search_people") {
-        $val = $_POST["query"];
+        $val = $con->real_escape_string($_POST["query"]);
         $query = "SELECT * FROM users WHERE firstname LIKE '" . $val . "%' OR lastname LIKE '" . $val . "%'";
         $result = $con->query($query);
         $output = "";
@@ -159,7 +159,7 @@ if (isset($_POST["action"])) {
         $condition = '';
         $user_id = $_POST["user_id"];
         if (!empty($_POST["query"])) {
-            $condition = "AND (users.firstname LIKE '" . $_POST["query"] . "%' OR users.lastname LIKE '" . $_POST["query"] . "%' ) ";
+            $condition = "AND (users.firstname LIKE '" . $con->real_escape_string($_POST["query"]) . "%' OR users.lastname LIKE '" . $con->real_escape_string($_POST["query"]) . "%' ) ";
         }
         $query = "
                     SELECT *
@@ -186,17 +186,19 @@ if (isset($_POST["action"])) {
     }
     // Post actions
     if ($action == "add_post") {
-        insert_post($con, $current_user, $_POST["content"]);
+        $post_content = $con->real_escape_string($_POST["content"]);
+        insert_post($con, $current_user, $post_content);
+        $post_content = $_POST["content"];
         $post_id = $con->insert_id;
         $posted_by = $firstname . " " . $lastname;
         $post_date = date("Y-m-d H:i:s");
         $post_image = "images/uploads/" . $_FILES["upload"]["name"];
-        show_one_post($con, $current_user_pic, $posted_by, $post_date, $current_user, $current_user, $post_id, $_POST["content"], $post_image, "add", false, 0);
+        show_one_post($con, $current_user_pic, $posted_by, $post_date, $current_user, $current_user, $post_id, $post_content, $post_image, "add", false, 0);
     }
 
     if ($action == "edit_post") {
         $post_id = $_POST["post_id"];
-        $post_content = $_POST["content"];
+        $post_content = $con->real_escape_string($_POST["content"]);
         $post_img = $_POST["post_img"];
         if ($post_img == "" && $_FILES['upload']['size'] == 0) {
             $query = $con->query("UPDATE posts SET post_content = '$post_content', post_image = '$post_img' WHERE post_id = '$post_id'");
@@ -207,7 +209,7 @@ if (isset($_POST["action"])) {
             $post_img = "images/uploads/" . $_FILES["upload"]["name"];
             $query = $con->query("UPDATE posts SET post_content = '$post_content', post_image = '$post_img' WHERE post_id = '$post_id'");
         }
-        $output = array($post_content, $post_img);
+        $output = array(test_output($post_content), $post_img);
         echo json_encode($output);
     }
 
@@ -223,7 +225,7 @@ if (isset($_POST["action"])) {
     // Comment actions
     if ($action == "add_comment") {
         $output = "";
-        $comment_content = $_POST["comment_content"];
+        $comment_content = $con->real_escape_string($_POST["comment_content"]);
         $result = $con->query("SELECT profile_picture FROM users WHERE user_id = '$current_user'");
         $user_image = $result->fetch_assoc()["profile_picture"];
         $comment_date = date("Y-m-d H:i:s");
@@ -231,13 +233,16 @@ if (isset($_POST["action"])) {
         $commented_by = $firstname . " " . $lastname;
         if ($con->query("INSERT INTO comments(post_id,posted_by, comment_content) VALUES('$post_id', '$current_user', '$comment_content')")) {
             $comment_id = $con->insert_id;
+            $comment_content = $_POST["comment_content"];
             show_comment($user_image, $commented_by, $comment_date, $comment_id, $comment_content, $current_user, $current_user);
         }
     }
 
+
+
     if ($action == "edit_comment") {
         $comment_id = $_POST["comment_id"];
-        $comment_content = $_POST["new_comment_content"];
+        $comment_content = $con->real_escape_string($_POST["new_comment_content"]);
         $time = date("Y-m-d H:i:s");
         $query = $con->query("SELECT posted_by FROM comments WHERE comment_id = $comment_id");
         $comented_by = $query->fetch_assoc()['posted_by'];
@@ -282,9 +287,9 @@ if (isset($_POST["action"])) {
 
     // Edit personal info
     if ($action == "edit_presonal_info") {
-        $firstname = $_POST["firstname"];
-        $lastname = $_POST["lastname"];
-        $email = $_POST["email"];
+        $firstname = $con->real_escape_string($_POST["firstname"]);
+        $lastname = $con->real_escape_string($_POST["lastname"]);
+        $email = $con->real_escape_string($_POST["email"]);
         $gender = $_POST["gender"];
         $birthday = $_POST["day"] . "/" . $_POST["month"] . "/" . $_POST["year"];
         $update_info_query = "UPDATE users SET firstname = '$firstname', lastname = '$lastname', gender = '$gender', email = '$email', birthday = '$birthday' WHERE user_id = '$current_user'";

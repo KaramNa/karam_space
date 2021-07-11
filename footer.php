@@ -23,7 +23,6 @@
 </div>
 <footer class="text-center text-light bg-dark fixed-bottom">&copy; 2021 Copyright: <strong>Karam Nassar</strong></footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-<script src="js/script.js"></script>
 <script>
     $(document).ready(function() {
         // $(".navbar-nav .nav-link").on("click", function() {
@@ -92,6 +91,8 @@
                 data: formdata,
                 success: function(data) {
                     $(".posts  div:eq(0)").after(data);
+                    $("#no_posts").parent().removeClass("border");
+                    $("#no_posts").parent().html("");
                     $("#post_content").val("");
                     $("#clear_imgInp").click();
                 }
@@ -101,7 +102,7 @@
 
         $(".posts").on("click", ".edit_post", function() {
             $("#save_edited_post").val($(this).val());
-            $("#textarea_update_post").val($("div[data-id = div" + $(this).val() + "]").html());
+            $("#textarea_update_post").html($("div[data-id = div" + $(this).val() + "]").html());
             var file = $("img[data-id = postImg" + $(this).val() + "]").attr("src");
             update_post_img_preview.src = file;
             if (file != "") {
@@ -216,14 +217,15 @@
             });
         }
         // comment events
-        $(".make_a_comment").on("click", function() {
+        $(".posts").on("click", ".make_a_comment", function() {
             $(this).parents(".post").find(".add_comment_form").toggleClass("d-none");
             $(this).parent().toggleClass("like-color");
             $(this).find("p").toggleClass("text-white");
             $(this).find("p").toggleClass("text-secondary");
 
         });
-        $(".comment_section").on("click", ".add_comment", function() {
+
+        $(".posts").on("click", ".add_comment", function() {
             var action = "add_comment";
             var thisbtn = $(this).parents(".comment_section");
             comment_content = $(this).parent().siblings().find(".comment_content");
@@ -237,18 +239,34 @@
 
                 },
                 success: function(data) {
-                    thisbtn.append(data).promise().done(function() {
-                        comment_content.val("");
-                    });
+                    thisbtn.append(data)
+                    comment_content.val("");
                 }
             });
+        });
+        $(".posts").on("click", "[name = edit_comment]", function() {
+            $(this).parents("[name = comment_field]").find("[name = new_comment_panel]").removeClass("d-none");
+            $(this).parents("[name = comment_field]").find("[name = new_comment_content]").html($(this).parents("[name = comment_field]").find("[name = old_comment]").html());
+            $(this).parents("[name = comment_field]").find("[name = new_comment_content]").focus();
+            $(this).parents("[name = comment_edit_delete]").addClass("d-none");
+            $(this).parents("[name = comment_field]").find("[name = old_comment]").addClass("d-none");
+            $(this).parents("[name = comment_field]").find("[name = date]").addClass("d-none");
+        });
+
+        $(".posts").on("click", "[name = edit_comment_cancel]", function() {
+            $(this).parents("[name = comment_field]").find("[name = new_comment_panel]").addClass("d-none");
+            $(this).parents("[name = comment_field]").find("[name = comment_edit_delete]").removeClass("d-none");
+            $(this).parents("[name = comment_field]").find("[name = old_comment]").removeClass("d-none");
+            $(this).parents("[name = comment_field]").find("[name = date]").removeClass("d-none");
 
         });
-        $(".comment_section").on("click", ".done_comment_edit", function() {
+
+        $(".posts").on("click", "[name = edit_comment_done]", function() {
             var action = "edit_comment";
             var comment_id = $(this).val();
             var new_comment_content = $(this).siblings("textarea");
-            var edited_paragraph = $(this).parent().parent().find(".old_comment");
+            var edited_paragraph = $(this).parent().parent().find("[name = old_comment]");
+            var btn = $(this);
             $.ajax({
                 url: "actions.php",
                 method: "POSt",
@@ -259,15 +277,18 @@
                 },
                 success: function(data) {
                     edited_paragraph.html(data);
-                    edit_done();
+                    btn.parents("[name = comment_field]").find("[name = new_comment_panel]").addClass("d-none");
+                    btn.parents("[name = comment_field]").find("[name = comment_edit_delete]").removeClass("d-none");
+                    btn.parents("[name = comment_field]").find("[name = old_comment]").removeClass("d-none");
+                    btn.parents("[name = comment_field]").find("[name = date]").removeClass("d-none");
                 }
             });
         });
-        $(".comment_section").on("click", ".delete_comment", function() {
+        $(".posts").on("click", "[name = delete_comment]", function() {
             console.log("error");
             var action = "delete_comment";
             var comment_id = $(this).val();
-            var remove_comment = $(this).parents(".comment_to_remove");
+            var remove_comment = $(this).parents("[name = comment_field]");
             $.ajax({
                 url: "actions.php",
                 method: "POSt",
