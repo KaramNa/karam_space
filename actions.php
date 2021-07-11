@@ -175,8 +175,8 @@ if (isset($_POST["action"])) {
         $output = "";
         if ($result->num_rows > 0) {
             foreach ($result as $row) {
-                $output .= "<div class='p-2 search-result' onclick='window.location.href = " . '"profile.php?id=' . $row["user_id"] . '"' . "'><img class='img-size rounded-circle' src='" . $row["profile_picture"]  . "' alt=''>  
-                <a id='profile_link' class='text-capitalize link text-dark' href='profile.php?id=" . $row["user_id"] . "'>" . $row["firstname"] . " " . $row["lastname"] . "</a>
+                $output .= "<div class='p-2 search-result' onclick='window.location.href = " . '"profile.php?id=' . $row["user_id"] . '"' . "'><img class='img-size rounded-circle me-2' src='" . $row["profile_picture"]  . "' alt=''>  
+                <a id='profile_link' class='text-capitalize link text-dark fw-bold' href='profile.php?id=" . $row["user_id"] . "'>" . $row["firstname"] . " " . $row["lastname"] . "</a>
                 </div>";
             }
         } else {

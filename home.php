@@ -13,7 +13,7 @@ $location = $con->query("SELECT profile_picture FROM users WHERE user_id='$curre
                 <img class="rounded-circle" src="<?php echo $location ?>" alt="" width="190px" height="190px">
             </div>
             <div class="">
-                <ul class="navbar-nav rounded border mt-3 p-4">
+                <ul class="navbar-nav bg-white rounded border mt-3 p-4">
                     <h3>Personal Info</h3>
                     <div class="text-center">
                         <hr class="mt-0">

@@ -14,8 +14,8 @@
                     <img src="" alt="" id="update_post_img_preview" width="100px" height="100px" class="p-1">
                 </div>
                 <div class="mt-3 d-flex justify-content-between">
-                    <button type="button" class="btn btn-secondary" name="fileToUpload" onclick="document.getElementById('update_post_imgInp').click();">Upload photo</button>
-                    <button id="save_edited_post" type="submit" class="btn btn-secondary">Save</button>
+                    <button type="button" class="btn btn-dark" name="fileToUpload" onclick="document.getElementById('update_post_imgInp').click();">Upload photo</button>
+                    <button id="save_edited_post" type="submit" class="btn btn-dark">Save</button>
                 </div>
             </form>
         </div>
@@ -53,6 +53,11 @@
             }
         });
         // search events
+        $("#search_karam_space").on("click", function() {
+            $("#search_input").toggleClass("d-none")
+            $("#tabs").toggleClass("hide")
+        });
+
         $("#search").keyup(function() {
             var action = "search_people"
             var query = $(this).val();
@@ -175,16 +180,14 @@
                 },
                 success: function(data) {
                     if (data == "like") {
-                        btn.parent().addClass("like-color");
                         btn.removeClass("text-secondary");
-                        btn.addClass("like-color");
-                        btn.html("Unlike");
+                        btn.addClass("text-primary");
+                        btn.html('<span><i class="fas fa-thumbs-up"></i></span>');
                         count_post_likes(val, data, btn);
                     } else {
-                        btn.parent().removeClass("like-color");
-                        btn.removeClass("like-color");
+                        btn.removeClass("text-primary");
                         btn.addClass("text-secondary");
-                        btn.html('<span class="fa fa-thumbs-up" style="font-size:22px;"> Like</span>');
+                        btn.html('<span><i class="fas fa-thumbs-up"></i></span>');
                         count_post_likes(val, data, btn);
 
                     }
@@ -219,8 +222,7 @@
         // comment events
         $(".posts").on("click", ".make_a_comment", function() {
             $(this).parents(".post").find(".add_comment_form").toggleClass("d-none");
-            $(this).parent().toggleClass("like-color");
-            $(this).find("p").toggleClass("text-white");
+            $(this).find("p").toggleClass("text-primary");
             $(this).find("p").toggleClass("text-secondary");
 
         });
@@ -447,7 +449,6 @@
         // Edit personal info
         $("#edit_personal_info").on("click", function() {
             $(this).addClass("d-none");
-            $("#save_edited_personal_info").removeClass("d-none");
             $("#show_personal_info").addClass("d-none");
             $("#edit_personal_info_form").removeClass("d-none");
             $("#input_firstname").val($("#firstname").html());
@@ -465,6 +466,12 @@
             $("[name = year").val(date[2]);
         });
 
+        $("#cancel_edit_personal_info").on("click", function() {
+            $("#edit_personal_info").removeClass("d-none");
+            $("#show_personal_info").removeClass("d-none");
+            $("#edit_personal_info_form").addClass("d-none");
+        });
+
         $("#personal_info").on("submit", "#edit_personal_info_form", function(e) {
             e.preventDefault();
             var formdata = new FormData(this);
@@ -478,14 +485,11 @@
                 processData: false,
                 success: function(data) {
                     $("#show_personal_info").html(data);
-                    $(this).addClass("d-none");
                     $("#edit_personal_info").removeClass("d-none");
                     $("#show_personal_info").removeClass("d-none");
                     $("#edit_personal_info_form").addClass("d-none");
                 }
             });
-
-
         });
 
     }); //Document ready

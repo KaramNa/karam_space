@@ -1,3 +1,7 @@
+body{
+  font-family: 'Lato', sans-serif;
+}
+
 .bg-image {
   background: url("../images/background.jpg") no-repeat;
   background-size: cover;
@@ -85,10 +89,6 @@
   border-radius: 50%;
 }
 
-.like-color{
-  background-color: #800000;
-  color: white;
-}
 
 .preserve_newline{
   white-space: pre-wrap;
@@ -98,7 +98,12 @@
     padding-right: 12px!important;
   }
 }
-
+@media (max-width: 560px) {
+  .hide
+  {
+    display: none;
+  }
+}
 .w-450{
   width: 450px;
 }

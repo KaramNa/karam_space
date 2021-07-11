@@ -135,7 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     ?>
                                 </select>
                             </div>
-                            <div class="col-sm-4 px-0 mt-2">
+                            <div class="col-sm-4 px-0 pe-2 mt-2">
                                 <select name="month" class="form-select">
                                     <option>January</option>
                                     <option>Febuary</option>
@@ -151,7 +151,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <option>December</option>
                                 </select>
                             </div>
-                            <div class="col-sm-4 px-0 mt-2">
+                            <div class="col-sm-4 px-0 ps-1 mt-2">
                                 <select name="year" class="form-select">
                                     <?php
                                     $year = 2021;
@@ -163,7 +163,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </select>
                             </div>
                         </div>
-                        <button type="submit" id="save_edited_personal_info" class="btn btn-dark d-none">Save</button>
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" id="save_edited_personal_info" class="btn btn-dark">Save</button>
+                            <button type="button" id="cancel_edit_personal_info" class="btn btn-dark">Cancel</button>
+                        </div>
                     </form>
 
                     <div class="text-center">
@@ -206,5 +209,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
     <?php
-    require("footer.php");  
+    require("footer.php");
     ?>

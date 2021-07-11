@@ -147,7 +147,7 @@ function show_one_post($con, $user_image, $posted_by, $post_date, $user_id, $pos
             </div>
             <div class="col-9 ps-1 d-flex flex-column justify-content-center">
                 <div class="text-capitalize fw-bold"><a class="link text-dark" href="<?php echo "profile.php?id=" . $posted_by_id ?>"><?php echo $posted_by ?></a></div>
-                <span><?php echo $post_date ?></span>
+                <span class="small"><?php echo $post_date ?></span>
             </div>
             <div class="col-1 d-flex justify-content-center">
                 <?php
@@ -157,7 +157,7 @@ function show_one_post($con, $user_image, $posted_by, $post_date, $user_id, $pos
                     <div class="dropdown nav-item">
                         <a href="#" class="fa fa-angle-double-down text-secondary nav-link" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="friend_request_area">
                         </a>
-                        <div class="dropdown-menu bg-dark" id="friend_request_list" aria-labelledby="dropdownMenuLink" style="position: absolute;min-width: 55px;">
+                        <div class="dropdown-menu small bg-dark" id="friend_request_list" aria-labelledby="dropdownMenuLink" style="position: absolute;min-width: 30px;">
                             <div class="search-result">
                                 <button id="edit_post" type="button" class="link-button form-control small text-light edit_post" value="<?php echo $post_id ?>" data-bs-toggle="modal" data-bs-target="#update_post">Edit</button>
                             </div>
@@ -192,15 +192,15 @@ function show_one_post($con, $user_image, $posted_by, $post_date, $user_id, $pos
                 $likes_count = $likes_query->num_rows;
             }
             if ($likes_count > 0) { ?>
-                <div class="col-6 btn btn-outline-light like-color p-0">
+                <div class="col-6 btn btn-outline-light p-0">
                     <button type="button" class="like_post btn text-secondary form-control" value="<?php echo $post_id ?>">
-                        <p class="text-white m-0">Unlike</p>
+                        <p class="text-primary m-0"><i class="fas fa-thumbs-up"></i></p>
                     </button>
                 </div>
             <?php
             } else { ?>
                 <div class="col-6 btn btn-outline-light p-0">
-                    <button type="button" class="like_post btn text-secondary form-control" value="<?php echo $post_id ?>"><span class="fa fa-thumbs-up" style="font-size:22px;"> Like</span></button>
+                    <button type="button" class="like_post btn text-secondary form-control" value="<?php echo $post_id ?>"><span><i class="fas fa-thumbs-up"></i></span></button>
                 </div>
             <?php
 
@@ -210,7 +210,7 @@ function show_one_post($con, $user_image, $posted_by, $post_date, $user_id, $pos
 
             <div class="col-6 btn btn-outline-light p-0">
                 <button type="button" class="make_a_comment btn text-secondary form-control" value="<?php echo "c" . $post_id ?>">
-                    <p class="text-secondary m-0 fw-bold">Comment</p>
+                    <p class="text-secondary m-0"><i class="fas fa-comment"></i></p>
                 </button>
             </div>
         </div>
