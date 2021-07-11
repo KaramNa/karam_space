@@ -8,11 +8,11 @@ include("functions.php");
     $error_new_email = "";
     $error_new_password = "";
     $error_gender = "";
-    $firstname = test_input($_POST["firstname"]);
-    $lastname = test_input($_POST["lastname"]);
-    $email = test_input($_POST["email"]);
-    $newpassword = test_input($_POST["newpassword"]);
-    $birthday = test_input($_POST["day"] . "/" . $_POST["month"] . "/" . $_POST["year"]);
+    $firstname = $con->real_escape_string($_POST["firstname"]);
+    $lastname = $con->real_escape_string($_POST["lastname"]);
+    $email = $con->real_escape_string($_POST["email"]);
+    $newpassword = $con->real_escape_string($_POST["newpassword"]);
+    $birthday = $_POST["day"] . "/" . $_POST["month"] . "/" . $_POST["year"];
     $gender = $_POST["gender"];
     if ($gender == "female") {
         $profile_picture = "images/profile_pictures/female.png";

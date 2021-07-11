@@ -6,14 +6,14 @@ $friend_request_id = 0;
 $location = $con->query("SELECT profile_picture FROM users WHERE user_id='$current_user'")->fetch_assoc()["profile_picture"];
 ?>
 <!-- user info -->
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="col-12 mt-3 text-center">
+<div class="container-fluid mt-5">
+    <div class="row justify-content-center">
+        <div class="px-0 w-350">
+            <div class="mt-3 text-center">
                 <img class="rounded-circle" src="<?php echo $location ?>" alt="" width="190px" height="190px">
             </div>
-            <div class="col-12">
-                <ul class="navbar-nav border mt-3 p-4">
+            <div class="">
+                <ul class="navbar-nav rounded border mt-3 p-4">
                     <h3>Personal Info</h3>
                     <div class="text-center">
                         <hr class="mt-0">
@@ -26,7 +26,7 @@ $location = $con->query("SELECT profile_picture FROM users WHERE user_id='$curre
                 </ul>
             </div>
         </div>
-        <div class="col-sm-8 mt-3 posts">
+        <div class="mt-3 px-0 w-450 posts">
             <div class="border p-3 bg-white rounded">
                 <!-- update status -->
                 <div>
@@ -52,8 +52,5 @@ $location = $con->query("SELECT profile_picture FROM users WHERE user_id='$curre
         </div>
     </div>
 </div>
-
-
-
 <?php require("footer.php");
 ?>

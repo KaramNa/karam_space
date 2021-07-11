@@ -8,10 +8,6 @@
   min-height: 95vh;
 }
 
-.row {
-  margin-right: 0;
-  margin-left: 0;
-}
 .signin-form {
   background-color: azure;
   padding: 35px;
@@ -55,11 +51,12 @@
   width: 40px;
   height: 40px;
 }
+.img-div{
+  width: 40px;
 
-@media only screen and (min-width: 576px) and (max-width: 768px) {
-  .make-space {
-    padding-left: 1.5rem !important;
-  }
+}
+.posted_by{
+  width: 200px;
 }
 
 .posts:last-child {
@@ -95,4 +92,19 @@
 
 .preserve_newline{
   white-space: pre-wrap;
+}
+@media (min-width: 768px) {
+  .px-0:nth-child(1){
+    padding-right: 12px!important;
+  }
+}
+
+.w-450{
+  width: 450px;
+}
+.w-350{
+  width: 350px;
+}
+div.col-2:nth-child(1){
+  width: 14%!important;
 }

@@ -63,9 +63,9 @@ function show_comment($user_image, $commented_by, $comment_date, $comment_id, $c
 {
 ?>
     <div name="comment_field" class="row mt-1">
-        <div class="col-xl-1 col-lg-2 col-md-2 col-2"><img class="img-size ms-0 rounded-circle img-comment" src="<?php echo $user_image ?>" alt=""></div>
-        <div class="col-xl-11 col-lg-10 col-md-10 col-10 make-space ps-1">
-            <div class="bg-light rounded me-2 p-1">
+        <div class="col-2"><img class="img-size ms-0 rounded-circle img-comment" src="<?php echo $user_image ?>" alt=""></div>
+        <div class="col-10 px-1">
+            <div class="bg-light rounded px-1">
                 <p class="mb-0 text-capitalize"><strong><?php echo $commented_by ?></strong></p>
                 <div name="new_comment_panel" class="d-none">
                     <textarea name="new_comment_content" class="form-control"  rows="1" placeholder="Enter a comment"></textarea>
@@ -74,7 +74,7 @@ function show_comment($user_image, $commented_by, $comment_date, $comment_id, $c
                 </div>
                 <p name="old_comment" class="text-break mb-0 preserve_newline"><?php echo test_output($comment_content) ?></p>
             </div>
-            <div class="d-flex me-2 justify-content-between">
+            <div class="d-flex justify-content-between">
                 <div name="comment_edit_delete">
                     <?php
                     $current_user = $GLOBALS["current_user"];
@@ -142,15 +142,14 @@ function show_one_post($con, $user_image, $posted_by, $post_date, $user_id, $pos
 ?>
     <div class="border container-fluid p-0 mt-3 post bg-white rounded">
         <div class="row mt-3">
-            <div class="col-xl-1 col-lg-3 col-md-3 col-2">
+            <div class="col-2 pe-0">
                 <img class="img-size rounded-circle" src="<?php echo $user_image ?>" alt="">
             </div>
-            <div class="col-xl-9 col-lg-7 col-md-7 col-8 ps-1 d-flex flex-column justify-content-center">
+            <div class="col-9 ps-1 d-flex flex-column justify-content-center">
                 <div class="text-capitalize fw-bold"><a class="link text-dark" href="<?php echo "profile.php?id=" . $posted_by_id ?>"><?php echo $posted_by ?></a></div>
                 <span><?php echo $post_date ?></span>
             </div>
-
-            <div class="col-2 d-flex justify-content-end">
+            <div class="col-1 d-flex justify-content-center">
                 <?php
                 $current_user = $GLOBALS["current_user"];
                 if ($current_user == $posted_by_id) {
@@ -167,7 +166,6 @@ function show_one_post($con, $user_image, $posted_by, $post_date, $user_id, $pos
                             </div>
                         </div>
                     </div>
-
                 <?php
                 }
                 ?>
@@ -219,11 +217,11 @@ function show_one_post($con, $user_image, $posted_by, $post_date, $user_id, $pos
         <!-- add a comment -->
         <div id="comments" class="row">
             <div class="comment_section p-0">
-                <div class="row border justify-content-between align-items-center py-3 my-3 add_comment_form d-none">
-                    <div class="col-lg-10 col-md-8 col-8">
+                <div class="border d-flex align-items-center px-1 py-3 my-3 add_comment_form d-none">
+                    <div class="col-9">
                         <textarea data-postid="<?php echo $post_id ?>" class="form-control comment_content" name="comment" style="height: 16px;" placeholder="Enter a comment"></textarea>
                     </div>
-                    <div class="col-lg-2 col-md-4 col-4 text-center">
+                    <div class="col-3 text-center">
                         <button type="button" class="btn btn-dark btn-sm add_comment" value="<?php echo $post_id ?>">Comment</button>
                     </div>
                 </div>

@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 ?>
 
-<div class="container mt-5">
+<div class="container-fluid mt-5">
     <div class="row text-center">
         <div class="col-sm-4"></div>
         <div class="col-sm-4">
@@ -79,9 +79,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="col-sm-4"></div>
         </div>
     </div>
-    <div id="personal_info" class="row mt-5">
-        <div class="col-md-4 mt-3">
-            <div class="row border bg-white rounded ">
+    <div id="personal_info" class="row mt-5 justify-content-center">
+        <div class="col-md-4 mt-3 w-450 px-0">
+            <div class="row border  bg-white rounded ">
                 <div class="d-flex justify-content-between align-items-center my-2">
                     <p class="fw-bold m-0">Personal Information</p>
                     <?php
@@ -108,13 +108,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <p><b>Email Address: </b><input id="input_email" name="email" class="form-control" type="text" class="">
                         <p class="mb-0"><b>Gender: </b></p>
                         <div class="row mb-3" id="input_gender">
-                            <div class="col-sm-4 px-1 mt-2">
+                            <div class="col-sm-4 px-0 mt-2">
                                 <div class="form-control d-flex justify-content-between align-items-center">
                                     <label for="female">Female</label>
                                     <input type="radio" id="female" name="gender" value="female">
                                 </div>
                             </div>
-                            <div class="col-sm-4 px-1 mt-2">
+                            <div class="col-sm-4 px-0 mt-2">
                                 <div class="form-control d-flex justify-content-between align-items-center">
                                     <label for="male">Male</label>
                                     <input type="radio" id="male" name="gender" value="male">
@@ -124,7 +124,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         <p class="mb-0"><b>Birthday: </b></p>
                         <div class="row mb-3" id="input_birthday">
-                            <div class="col-sm-4 px-1 mt-2">
+                            <div class="col-sm-4 px-0 mt-2">
                                 <select name="day" class="form-select">
                                     <?php
                                     $day = 1;
@@ -135,7 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     ?>
                                 </select>
                             </div>
-                            <div class="col-sm-4 px-1 mt-2">
+                            <div class="col-sm-4 px-0 mt-2">
                                 <select name="month" class="form-select">
                                     <option>January</option>
                                     <option>Febuary</option>
@@ -151,7 +151,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <option>December</option>
                                 </select>
                             </div>
-                            <div class="col-sm-4 px-1 mt-2">
+                            <div class="col-sm-4 px-0 mt-2">
                                 <select name="year" class="form-select">
                                     <?php
                                     $year = 2021;
@@ -201,10 +201,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
 
-        <div class="col-md-8 posts">
+        <div class="col-md-8 px-0 w-450 posts">
             <?php show_posts($request_to_id, $con, "my_posts"); ?>
         </div>
     </div>
     <?php
-    require("footer.php");
+    require("footer.php");  
     ?>
