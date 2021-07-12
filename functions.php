@@ -194,13 +194,13 @@ function show_one_post($con, $user_image, $posted_by, $post_date, $user_id, $pos
             if ($likes_count > 0) { ?>
                 <div class="col-6 btn btn-outline-light p-0">
                     <button type="button" class="like_post btn text-secondary form-control" value="<?php echo $post_id ?>">
-                        <p class="text-primary m-0"><i class="fas fa-thumbs-up"></i></p>
+                        <p class="text-primary m-0"><i class="fa fa-thumbs-up"></i></p>
                     </button>
                 </div>
             <?php
             } else { ?>
                 <div class="col-6 btn btn-outline-light p-0">
-                    <button type="button" class="like_post btn text-secondary form-control" value="<?php echo $post_id ?>"><span><i class="fas fa-thumbs-up"></i></span></button>
+                    <button type="button" class="like_post btn text-secondary form-control" value="<?php echo $post_id ?>"><span><i class="fa fa-thumbs-up"></i></span></button>
                 </div>
             <?php
 
@@ -210,7 +210,7 @@ function show_one_post($con, $user_image, $posted_by, $post_date, $user_id, $pos
 
             <div class="col-6 btn btn-outline-light p-0">
                 <button type="button" class="make_a_comment btn text-secondary form-control" value="<?php echo "c" . $post_id ?>">
-                    <p class="text-secondary m-0"><i class="fas fa-comment"></i></p>
+                    <p class="text-secondary m-0"><i class="fa fa-comment"></i></p>
                 </button>
             </div>
         </div>

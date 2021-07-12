@@ -36,10 +36,15 @@ $location = $con->query("SELECT profile_picture FROM users WHERE user_id='$curre
                             <input type="file" id="imgInp" name="upload" hidden>
                             <a role="button" id="clear_imgInp" class="unselect_img">X</a>
                             <img src="" alt="" id="img_preview" width="100px" height="100px" class="p-1">
+                            <div class="progress" style="width: 100px;">
+                                <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                                    0%
+                                </div>
+                            </div>
                         </div>
                         <div class="mt-3 d-flex justify-content-between">
-                            <button type="button" class="btn btn-dark" name="fileToUpload" onclick="document.getElementById('imgInp').click();"><i class="fas fa-camera"></i></button>
-                            <button type="submit" class="btn btn-dark" name="Submit"><i class="fa fa-rocket" aria-hidden="true"></i></button>
+                            <button type="button" class="btn btn-dark" name="fileToUpload" onclick="document.getElementById('imgInp').click();"><i class="fa fa-camera"></i></button>
+                            <button id="share_a_post" type="submit" class="btn btn-dark" name="Submit"><i class="fa fa-rocket" aria-hidden="true"></i></button>
                         </div>
                     </form>
                 </div>

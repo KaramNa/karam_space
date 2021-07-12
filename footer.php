@@ -12,9 +12,14 @@
                     <input type="file" id="update_post_imgInp" name="upload" hidden>
                     <a role="button" id="update_post_clear_imgInp" class="unselect_img">X</a>
                     <img src="" alt="" id="update_post_img_preview" width="100px" height="100px" class="p-1">
+                    <div class="progress" style="width: 100px;">
+                        <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                            0%
+                        </div>
+                    </div>
                 </div>
                 <div class="mt-3 d-flex justify-content-between">
-                    <button type="button" class="btn btn-dark" name="fileToUpload" onclick="document.getElementById('update_post_imgInp').click();"><i class="fas fa-camera"></i></button>
+                    <button type="button" class="btn btn-dark" name="fileToUpload" onclick="document.getElementById('update_post_imgInp').click();"><i class="fa fa-camera"></i></button>
                     <button id="save_edited_post" type="submit" class="btn btn-dark">Save</button>
                 </div>
             </form>
@@ -41,6 +46,7 @@
                     $("#" + input.id).val("");
                     img_previewer.src = "";
                     $("#" + img_previewer.id).parent().addClass("d-none");
+                    $(this).parent().siblings().find("[type = submit]").prop("disabled", false);
                 });
 
             }
@@ -70,7 +76,7 @@
                         action: action
                     },
                     beforeSend: function() {
-                        $('#search_results').html('<li align="center"><i class="fa fa-circle-o-notch fa-spin"></i></li>');
+                        $('#search_results').html('<li align="center"><i class="fa fa-circle-o-notch fa-spin text-white"></i></li>');
 
                     },
                     success: function(data) {
@@ -88,18 +94,34 @@
             var formdata = new FormData(this);
             formdata.append("action", "add_post");
             $.ajax({
+                xhr: function() {
+                    var xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener("progress", function(evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = parseInt((evt.loaded / evt.total) * 100);
+                            $('.progress-bar').width(percentComplete + '%');
+                            $('.progress-bar').html(percentComplete + '%');
+                        }
+                    }, false);
+                    return xhr;
+                },
                 url: "actions.php",
                 method: "POST",
                 contentType: false,
                 cache: false,
                 processData: false,
                 data: formdata,
+                beforeSend: function() {
+                    $("#share_a_post").prop("disabled", true);
+                },
                 success: function(data) {
                     $(".posts  div:eq(0)").after(data);
                     $("#no_posts").parent().removeClass("border");
                     $("#no_posts").parent().html("");
                     $("#post_content").val("");
                     $("#clear_imgInp").click();
+                    $("#share_a_post").prop("disabled", false);
+
                 }
             });
         });
@@ -134,17 +156,32 @@
             formdata.append("post_id", post_id);
             formdata.append("post_img", $("#update_post_img_preview").attr("src"));
             $.ajax({
+                xhr: function() {
+                    var xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener("progress", function(evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = parseInt((evt.loaded / evt.total) * 100);
+                            $('.progress-bar').width(percentComplete + '%');
+                            $('.progress-bar').html(percentComplete + '%');
+                        }
+                    }, false);
+                    return xhr;
+                },
                 url: "actions.php",
                 method: "POST",
                 contentType: false,
                 cache: false,
                 processData: false,
                 data: formdata,
+                beforeSend: function() {
+                    $("#save_edited_post").prop("disabled", true);
+                },
                 success: function(data) {
                     var result = jQuery.parseJSON(data);
                     $("div[data-id = div" + post_id + "]").html(result[0]);
                     $("img[data-id = postImg" + post_id + "]")[0].src = result[1];
                     $("#close_update_post_modal").click();
+                    $("#save_edited_post").prop("disabled", false);
                 }
             });
         });
@@ -182,12 +219,12 @@
                     if (data == "like") {
                         btn.removeClass("text-secondary");
                         btn.addClass("text-primary");
-                        btn.html('<span><i class="fas fa-thumbs-up"></i></span>');
+                        btn.html('<span><i class="fa fa-thumbs-up"></i></span>');
                         count_post_likes(val, data, btn);
                     } else {
                         btn.removeClass("text-primary");
                         btn.addClass("text-secondary");
-                        btn.html('<span><i class="fas fa-thumbs-up"></i></span>');
+                        btn.html('<span><i class="fa fa-thumbs-up"></i></span>');
                         count_post_likes(val, data, btn);
 
                     }
@@ -345,7 +382,7 @@
                     action: action
                 },
                 beforeSend: function() {
-                    $('#friend_request_list').html('<li align="center"><i class="fa fa-circle-o-notch fa-spin"></i></li>');
+                    $('#friend_request_list').html('<li align="center"><i class="fa fa-circle-o-notch fa-spin text-white"></i></li>');
 
                 },
                 success: function(data) {

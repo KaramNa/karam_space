@@ -176,12 +176,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <form action="" method="POST" enctype="multipart/form-data">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <p class="fw-bold m-0">Update Profile Picture</p>
-                                <button type="button" class="btn btn-dark" onclick="document.getElementById('user_image_input').click();"><i class="fas fa-camera"></i></button>
+                                <button type="button" class="btn btn-dark" onclick="document.getElementById('user_image_input').click();"><i class="fa fa-camera"></i></button>
                             </div>
                             <div class="mt-3 position-relative mb-2 d-none">
                                 <input type="file" id="user_image_input" name="upload_user_image" hidden>
                                 <a href="#" role="button" id="profile_clear_imgInp" class="unselect_img">X</a>
                                 <img src="" alt="" id="profile_img_preview" width="100px" height="100px" class="p-1">
+                                <div class="progress" style="width: 100px;">
+                                    <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                                        0%
+                                    </div>
+                                </div>
                                 <button type="submit" class="btn btn-dark position-absolute end-0 bottom-0">Update</button>
                             </div>
                         </form>
