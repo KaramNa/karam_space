@@ -21,7 +21,7 @@
     ?>
     <nav class="navbar navbar-expand navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="home.php">KARAM SPACE</a>
+            <a class="navbar-brand fs-6" href="home.php">KARAM SPACE</a>
             <div class="collapse navbar-collapse justify-content-end">
                 <ul id="tabs"  class="navbar-nav">
                     <li class="nav-item">

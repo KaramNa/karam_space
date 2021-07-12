@@ -14,7 +14,7 @@
                     <img src="" alt="" id="update_post_img_preview" width="100px" height="100px" class="p-1">
                 </div>
                 <div class="mt-3 d-flex justify-content-between">
-                    <button type="button" class="btn btn-dark" name="fileToUpload" onclick="document.getElementById('update_post_imgInp').click();">Upload photo</button>
+                    <button type="button" class="btn btn-dark" name="fileToUpload" onclick="document.getElementById('update_post_imgInp').click();"><i class="fas fa-camera"></i></button>
                     <button id="save_edited_post" type="submit" class="btn btn-dark">Save</button>
                 </div>
             </form>

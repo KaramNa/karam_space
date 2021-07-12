@@ -8,7 +8,7 @@ $location = $con->query("SELECT profile_picture FROM users WHERE user_id='$curre
 <!-- user info -->
 <div class="container-fluid mt-5">
     <div class="row justify-content-center">
-        <div class="px-0 w-350">
+        <div class="px-0 w-350 make-space">
             <div class="mt-3 text-center">
                 <img class="rounded-circle" src="<?php echo $location ?>" alt="" width="190px" height="190px">
             </div>
@@ -19,7 +19,6 @@ $location = $con->query("SELECT profile_picture FROM users WHERE user_id='$curre
                         <hr class="mt-0">
                     </div>
                     <li class="text-capitalize"><strong>Full Name: </strong><?php echo $firstname . " " . $lastname ?></li>
-                    <li class="text-capitalize"><strong>Last Name: </strong><?php echo $lastname ?></li>
                     <li><strong>Email: </strong><?php echo $email ?></li>
                     <li class="text-capitalize"><strong>Gender: </strong><?php echo $gender ?></li>
                     <li><strong>Birthday: </strong><?php echo $birthday ?></li>
@@ -39,8 +38,8 @@ $location = $con->query("SELECT profile_picture FROM users WHERE user_id='$curre
                             <img src="" alt="" id="img_preview" width="100px" height="100px" class="p-1">
                         </div>
                         <div class="mt-3 d-flex justify-content-between">
-                            <button type="button" class="btn btn-dark" name="fileToUpload" onclick="document.getElementById('imgInp').click();">Upload photo</button>
-                            <button type="submit" class="btn btn-dark" name="Submit">Share</button>
+                            <button type="button" class="btn btn-dark" name="fileToUpload" onclick="document.getElementById('imgInp').click();"><i class="fas fa-camera"></i></button>
+                            <button type="submit" class="btn btn-dark" name="Submit"><i class="fa fa-rocket" aria-hidden="true"></i></button>
                         </div>
                     </form>
                 </div>

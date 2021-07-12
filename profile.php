@@ -80,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
     <div id="personal_info" class="row mt-5 justify-content-center">
-        <div class="col-md-4 mt-3 w-450 px-0">
+        <div class="col-md-4 mt-3 w-450 px-0  make-space">
             <div class="row border  bg-white rounded ">
                 <div class="d-flex justify-content-between align-items-center my-2">
                     <p class="fw-bold m-0">Personal Information</p>
@@ -135,7 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     ?>
                                 </select>
                             </div>
-                            <div class="col-sm-4 px-0 pe-2 mt-2">
+                            <div class="col-sm-4 px-0 mt-2">
                                 <select name="month" class="form-select">
                                     <option>January</option>
                                     <option>Febuary</option>
@@ -151,7 +151,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <option>December</option>
                                 </select>
                             </div>
-                            <div class="col-sm-4 px-0 ps-1 mt-2">
+                            <div class="col-sm-4 px-0 mt-2">
                                 <select name="year" class="form-select">
                                     <?php
                                     $year = 2021;
@@ -176,7 +176,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <form action="" method="POST" enctype="multipart/form-data">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <p class="fw-bold m-0">Update Profile Picture</p>
-                                <button type="button" class="btn btn-dark" onclick="document.getElementById('user_image_input').click();">Choose</button>
+                                <button type="button" class="btn btn-dark" onclick="document.getElementById('user_image_input').click();"><i class="fas fa-camera"></i></button>
                             </div>
                             <div class="mt-3 position-relative mb-2 d-none">
                                 <input type="file" id="user_image_input" name="upload_user_image" hidden>
