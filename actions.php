@@ -6,63 +6,6 @@ include("functions.php");
 if (isset($_POST["action"])) {
     $action = $_POST["action"];
     $current_user = $_SESSION["user_id"];
-    // Sign up
-    if ($action == "signup") {
-        $error_firstname = "";
-        $error_lastname = "";
-        $error_new_email = "";
-        $error_new_password = "";
-        $error_gender = "";
-        $firstname = $con->real_escape_string($_POST["firstname"]);
-        $lastname = $con->real_escape_string($_POST["lastname"]);
-        $email = $con->real_escape_string($_POST["email"]);
-        $newpassword = $con->real_escape_string($_POST["newpassword"]);
-        $birthday = $con->real_escape_string($_POST["day"] . "/" . $_POST["month"] . "/" . $_POST["year"]);
-        $gender = $con->real_escape_string($_POST["gender"]);
-        if ($gender == "female") {
-            $profile_picture = "images/profile_pictures/female.png";
-        } else {
-            $profile_picture = "images/profile_pictures/male.jpg";
-        }
-        $singupOk = true;
-
-        if ($firstname == "") {
-            $error_firstname = "<label class='error'>* Required field</label>";
-            $singupOk = false;
-        }
-        if ($lastname == "") {
-            $error_lastname = "<label class='error'>* Required field</label>";
-            $singupOk = false;
-        }
-        if ($email == "") {
-            $error_new_email = "<label class='error'>* Required field</label>";
-            $singupOk = false;
-        }
-        $sql = $con->query("SELECT * FROM users WHERE email='$email'");
-        if ($sql->num_rows > 0) {
-            $error_new_email = "<label class='error'>Email address already exsits</label>";
-            $singupOk = false;
-        }
-        if ($newpassword == "") {
-            $error_new_password = "<label class='error'>* Required field</label>";
-            $singupOk = false;
-        }
-        if ($gender == "") {
-            $error_gender = "<label class='error'>* Required field</label>";
-            $singupOk = false;
-        }
-        if ($singupOk) {
-            $con->query("INSERT INTO users(firstname,lastname,email,password,gender,birthday ,profile_picture) VALUES('$firstname','$lastname','$email','$newpassword','$gender','$birthday','$profile_picture')");
-            $sql = $con->query("SELECT * FROM users WHERE email = '$email'");
-            $row = $sql->fetch_assoc();
-            if ($sql !== false and $sql->num_rows > 0) {
-                $_SESSION["user_id"] = $row["user_id"];
-                header('location:home.php');
-            }
-        }
-        $output = array($error_firstname, $error_lastname, $error_new_email, $error_new_password, $gender);
-        echo json_encode($output);
-    }
 
     // Search actions
     if ($action == "search_people") {
@@ -98,7 +41,13 @@ if (isset($_POST["action"])) {
     if ($action == "accept_friend") {
         $request_id = $_POST["request_id"];
         $con->query("UPDATE friend_request SET request_status = 'confirm' WHERE request_id = '$request_id'");
+        $query = "SELECT request_from_id, request_to_id FROM friend_request WHERE request_id = '$request_id'";
+        $result = $con->query($query)->fetch_assoc();
+        $recipient_id = $result["request_from_id"];
+        $sender_id = $result["request_to_id"];
+        $con->query("INSERT INTO notifications (recipient_id, sender_id, activity_type, object_url) VALUES ('$recipient_id','$sender_id','accept_friend_request','profile.php?id=$current_user')");
     }
+    // friend request list
     if ($action == "count_un_seen_friend_request") {
         $query = "SELECT COUNT(request_id) AS total FROM friend_request
         WHERE request_to_id = '$current_user'
@@ -155,6 +104,71 @@ if (isset($_POST["action"])) {
         AND request_notify_status = 'no'");
     }
 
+    // notifications list
+    if ($action == "count_un_seen_notificatons") {
+        $query = "SELECT COUNT(notification_id) AS total FROM notifications
+    WHERE recipient_id = '$current_user'
+    AND is_read = 'no'";
+        $result = $con->query($query)->fetch_assoc();
+        echo $result['total'];
+    }
+
+    if ($action == "load_notifications") {
+        $query = "
+                SELECT * FROM notifications 
+                WHERE recipient_id = '$current_user' 
+                ORDER BY notification_date DESC";
+
+        $result = $con->query($query);
+
+        $output = '';
+        if ($result->num_rows > 0) {
+            foreach ($result as $row) {
+                $user_data = get_user_name($row["sender_id"], $con);
+                $user_row = $user_data->fetch_assoc();
+                $user_name = $user_row["firstname"] . " " . $user_row["lastname"];
+                $user_image = $user_row["profile_picture"];
+                $activity_type = $row["activity_type"];
+                $object_url = $row["object_url"];
+                if ($activity_type == "accept_friend_request") {
+                    $output .= "
+                    <div class='p-2 search-result small' onclick='window.location.href = " . '"' . $object_url . '"' ."'>
+                        <img class='img-size-small rounded-circle' src='" . $user_image  . "' alt=''>  
+                        <span class='text-capitalize small  link text-light'>$user_name</span>
+                        <span class='text-light'>accepted your friend request</span>
+                    </div>
+                    ";
+                } else if ($activity_type == "comment") {
+                    $output .= "
+                    <div class='p-2 search-result small' onclick='window.location.href = " . '"' . $object_url . '"' ."'>
+                        <img class='img-size-small rounded-circle' src='" . $user_image  . "' alt=''>  
+                        <span class='text-capitalize small  link text-light'>$user_name</span>
+                        <span class='text-light'>commented on your post</span>
+                    </div>
+                    ";
+                } else if ($activity_type == "like") {
+                    $output .= "
+                    <div class='p-2 search-result small' onclick='window.location.href = " . '"' . $object_url . '"' ."'>
+                        <img class='img-size-small rounded-circle' src='" . $user_image  . "' alt=''>  
+                        <span class='text-capitalize  small link text-light'>$user_name</span>
+                        <span class='text-light'>liked your post</span>
+                    </div>
+                    ";
+                }
+            }
+        } else {
+            $output = "<p class='ms-2 mb-0 text-light'>No notifications</p>";
+        }
+        echo $output;
+    }
+
+    if ($action == "remove_notifications_count") {
+        $con->query("UPDATE notifications SET is_read = 'yes' 
+    WHERE recipient_id = '$current_user'
+    AND is_read = 'no'");
+    }
+
+
     if ($action == "load_friend_list") {
         $condition = '';
         $user_id = $_POST["user_id"];
@@ -193,7 +207,7 @@ if (isset($_POST["action"])) {
         $posted_by = $firstname . " " . $lastname;
         $post_date = date("Y-m-d H:i:s");
         $post_image = "images/uploads/" . $_FILES["upload"]["name"];
-        show_one_post($con, $current_user_pic, $posted_by, $post_date, $current_user, $current_user, $post_id, $post_content, $post_image, "add", false, 0);
+        show_one_post($con, $current_user_pic, $posted_by, $post_date, $current_user, $post_id, $post_content, $post_image, "add", false, 0);
     }
 
     if ($action == "edit_post") {
@@ -234,6 +248,11 @@ if (isset($_POST["action"])) {
         if ($con->query("INSERT INTO comments(post_id,posted_by, comment_content) VALUES('$post_id', '$current_user', '$comment_content')")) {
             $comment_id = $con->insert_id;
             $comment_content = $_POST["comment_content"];
+            $user = $con->query("SELECT user_id FROM posts WHERE post_id = '$post_id'");
+            $recipient_id = $user->fetch_assoc()["user_id"];
+            if ($recipient_id != $current_user) {
+                $con->query("INSERT INTO notifications (recipient_id, sender_id, activity_type, comment_id, post_id, object_url) VALUES ('$recipient_id','$current_user','comment','$comment_id','$post_id', 'view_notif_object.php?post_id=$post_id')");
+            }
             show_comment($user_image, $commented_by, $comment_date, $comment_id, $comment_content, $current_user, $current_user);
         }
     }
@@ -256,7 +275,9 @@ if (isset($_POST["action"])) {
         $query = $con->query("SELECT posted_by FROM comments WHERE comment_id = $comment_id");
         $comented_by = $query->fetch_assoc()['posted_by'];
         if ($current_user == $comented_by) {
-            $con->query("DELETE FROM comments  WHERE comment_id = '$comment_id'");
+            if ($con->query("DELETE FROM comments  WHERE comment_id = '$comment_id'")) {
+                $con->query("DELETE  FROM notifications WHERE comment_id = '$comment_id'");
+            }
         } else {
             die();
         }
@@ -267,10 +288,18 @@ if (isset($_POST["action"])) {
         $user_id = $current_user;
         $query = $con->query("SELECT * FROM likes WHERE post_id = '$post_id' AND user_id = '$user_id'");
         if ($query->num_rows > 0) {
-            $con->query("DELETE FROM likes WHERE user_id = '$user_id' AND post_id = '$post_id'");
+            if ($con->query("DELETE FROM likes WHERE user_id = '$user_id' AND post_id = '$post_id'")) {
+                $con->query("DELETE FROM notifications WHERE post_id = '$post_id'");
+            }
             echo "unlike";
         } else {
-            $con->query("INSERT INTO likes VALUES('$post_id','$user_id')");
+            if ($con->query("INSERT INTO likes VALUES('$post_id','$user_id')")) {
+                $user = $con->query("SELECT user_id FROM posts WHERE post_id = '$post_id'");
+                $recipient_id = $user->fetch_assoc()["user_id"];
+                if ($recipient_id != $current_user) {
+                    $con->query("INSERT INTO notifications (recipient_id, sender_id, activity_type, post_id, object_url) VALUES ('$recipient_id','$current_user','like',$post_id, 'view_notif_object.php?post_id=$post_id')");
+                }
+            }
             echo "like";
         }
     }

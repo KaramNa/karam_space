@@ -77,7 +77,6 @@
                     },
                     beforeSend: function() {
                         $('#search_results').html('<li align="center"><i class="fa fa-circle-o-notch fa-spin text-white"></i></li>');
-
                     },
                     success: function(data) {
                         $("#search_results").html(data);
@@ -367,10 +366,71 @@
             })
         }
 
+        var notifications_seen = false;
+        $("#notifications_area").click(function() {
+            if (!notifications_seen) {
+                load_notifications();
+                notifications_seen = true;
+            }
+        });
+
+        function count_un_seen_notificatons() {
+            var action = 'count_un_seen_notificatons';
+
+            $.ajax({
+                url: "actions.php",
+                method: "POST",
+                data: {
+                    action: action
+                },
+                success: function(data) {
+                    if (data > 0) {
+                        $('#unseen_notifications_area').html('<span class="label text-danger">' + data + '</span>');
+                        notifications_seen = false;
+                    }
+                }
+            })
+        }
+
+        function load_notifications() {
+            var action = "load_notifications";
+            $.ajax({
+                url: "actions.php",
+                method: "POST",
+                data: {
+                    action: action
+                },
+                beforeSend: function() {
+                    $('#notifications_list').html('<li align="center"><i class="fa fa-circle-o-notch fa-spin text-white"></i></li>');
+
+                },
+                success: function(data) {
+                    $("#notifications_list").html(data);
+                    remove_notifications_count();
+                }
+
+            });
+        }
+        function remove_notifications_count() {
+            var action = "remove_notifications_count";
+            $.ajax({
+                url: "actions.php",
+                method: "POST",
+                data: {
+                    action: action
+                },
+                success: function(data) {
+                    $("#unseen_notifications_area").html("");
+
+                }
+            });
+        }
 
         count_un_seen_friend_request();
+        count_un_seen_notificatons();
         setInterval(function() {
             count_un_seen_friend_request();
+            count_un_seen_notificatons();
         }, 5000);
 
         function load_friends_request_list() {
@@ -483,6 +543,14 @@
         });
         load_friends();
 
+        $("#search_friend_list").keyup(function() {
+            var val = $(this).val();
+            if (val != "") {
+                load_friends(val);
+            } else {
+                load_friends();
+            }
+        });
         // Edit personal info
         $("#edit_personal_info").on("click", function() {
             $(this).addClass("d-none");

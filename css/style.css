@@ -55,6 +55,10 @@ body {
   width: 40px;
   height: 40px;
 }
+.img-size-small {
+  width: 20px;
+  height: 20px;
+}
 .img-div {
   width: 40px;
 }

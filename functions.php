@@ -8,15 +8,6 @@ function show_posts($current_profile_user, $con, $show_post_customize)
                         AND request_status = 'confirm'");
     if ($friends->num_rows == 0) {
     }
-    function count_likes($post_id, $con)
-    {
-        if ($post_id > 0) {
-            $query = "SELECT COUNT(post_id) AS total FROM likes
-                    WHERE post_id = '$post_id'";
-            $result = $con->query($query)->fetch_assoc();
-            return $result["total"];
-        }
-    }
     $included_current_user = false;
     do {
         if (!$included_current_user) {
@@ -48,7 +39,7 @@ function show_posts($current_profile_user, $con, $show_post_customize)
                 $liked_by_me_flag = false;
             }
 
-            show_one_post($con, $user_image, $posted_by, $post_date, $current_user, $posted_by_id, $post_id, $content, $post_image, "show", $liked_by_me_flag, $post_likes_num);
+            show_one_post($con, $user_image, $posted_by, $post_date, $posted_by_id, $post_id, $content, $post_image, "show", $liked_by_me_flag, $post_likes_num);
         }
         if ($show_post_customize == "my_posts") {
             break;
@@ -59,7 +50,7 @@ function show_posts($current_profile_user, $con, $show_post_customize)
     }
 }
 
-function show_comment($user_image, $commented_by, $comment_date, $comment_id, $comment_content, $user_id, $commented_by_id)
+function show_comment($user_image, $commented_by, $comment_date, $comment_id, $comment_content, $commented_by_id)
 {
 ?>
     <div name="comment_field" class="row mt-1">
@@ -68,7 +59,7 @@ function show_comment($user_image, $commented_by, $comment_date, $comment_id, $c
             <div class="bg-light rounded px-1">
                 <p class="mb-0 text-capitalize"><strong><?php echo $commented_by ?></strong></p>
                 <div name="new_comment_panel" class="d-none">
-                    <textarea name="new_comment_content" class="form-control"  rows="1" placeholder="Enter a comment"></textarea>
+                    <textarea name="new_comment_content" class="form-control" rows="1" placeholder="Enter a comment"></textarea>
                     <button name="edit_comment_done" class="link-button small" value="<?php echo $comment_id ?>">Done</button>
                     <button name="edit_comment_cancel" class="link-button small">Cancel</button>
                 </div>
@@ -89,6 +80,15 @@ function show_comment($user_image, $commented_by, $comment_date, $comment_id, $c
         </div>
     </div>
 <?php
+}
+function count_likes($post_id, $con)
+{
+    if ($post_id > 0) {
+        $query = "SELECT COUNT(post_id) AS total FROM likes
+                WHERE post_id = '$post_id'";
+        $result = $con->query($query)->fetch_assoc();
+        return $result["total"];
+    }
 }
 
 function insert_post($con, $user_id, $post_content)
@@ -137,7 +137,7 @@ function check_image()
     }
 }
 
-function show_one_post($con, $user_image, $posted_by, $post_date, $user_id, $posted_by_id, $post_id, $content, $post_image, $add_show, $liked_by_me_flag, $post_likes_num)
+function show_one_post($con, $user_image, $posted_by, $post_date, $posted_by_id, $post_id, $content, $post_image, $add_show, $liked_by_me_flag, $post_likes_num)
 {
 ?>
     <div class="border container-fluid p-0 mt-3 post bg-white rounded">
@@ -236,7 +236,7 @@ function show_one_post($con, $user_image, $posted_by, $post_date, $user_id, $pos
                         $commented_by = $row["firstname"] . " " . $row["lastname"];
                         $commented_by_id = $row["posted_by"];
 
-                        show_comment($user_image, $commented_by, $comment_date, $comment_id, $comment_content, $user_id, $commented_by_id);
+                        show_comment($user_image, $commented_by, $comment_date, $comment_id, $comment_content, $commented_by_id);
                     }
                 } ?>
 
